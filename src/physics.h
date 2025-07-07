@@ -31,8 +31,7 @@ void InitPhysics();
 void UpdatePhysics(float deltaTime);
 void CleanupPhysics();
 void render(float deltaTime);
-void rayCast(Vector3 to, Vector3 from, btCollisionWorld::RayResultCallback& callback);
-void testRayCast();
+void testRayCast(Vector3 from, Vector3 to);
 void DrawRayLine(Vector3 from, Vector3 to, Color color = RED);
 // Player position tracking
 float getPlayerX();

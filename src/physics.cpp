@@ -108,13 +108,7 @@ dynamicsWorld->addRigidBody(PersonA->body);
 
 
 }
-void rayCast(Vector3 to, Vector3 from, btCollisionWorld::RayResultCallback& callback){
-// lastRayFrom.set(from).sub(0f,5f,0f);
-btVector3 btFrom(from.x, from.y, from.z);
-btVector3 btTo(to.x, to.y, to.z);
-dynamicsWorld->rayTest(btFrom, btTo, callback);
 
-}
 
 void UpdatePhysics(float deltaTime) {
     if (dynamicsWorld) {
@@ -144,12 +138,10 @@ void DrawRayLine(Vector3 from, Vector3 to, Color color){
 }
 
 
-void testRayCast()
+void testRayCast(Vector3 from, Vector3 to)
 {
-    Vector3 from = { 0.0f, 1.0f, 0.0f }; // Ray start
-    Vector3 to = { 0.0f, 1.0f, 10.0f };  // Ray end
-    // Use Bullet's default callback
-
+    // Vector3 from = { x, 1.0f, 0.0f }; // Ray start
+    // Vector3 to = { 0.0f, 1.0f, 10.0f };  // Ray end
 
     DrawRayLine(from, to);
 
@@ -180,14 +172,14 @@ void testRayCast()
             std::cout << "Hit the player (yourself).\n";
         } else if (hitObject == PersonA->body) {
             std::cout << "Hit PersonA.\n";
-        } else {
+        } else if (hitObject == groundBody) {
+            std::cout << "Hit Ground surface.\n";
+        }else {
             std::cout << "Hit unknown object.\n";
         }
     }
     
 
-
-   
 
 
 }
@@ -254,14 +246,22 @@ btVector3 bulletPos = trans.getOrigin();setPlayerY(bulletPos.getY());setPlayerX(
    // std::cout << "rendering physics: " << bulletPos.getX() << std::endl;
 
     float capsuleVisualHeight = 1.5f + 2 * 0.2f; // total 1.9
-    float halfHeight = capsuleVisualHeight / 2.0f;
+    float halfHeight = capsuleVisualHeight / 1.0f;
+
     
-    Vector3 startPos = { bulletPos.getX(), bulletPos.getY() - halfHeight, bulletPos.getZ() };
-    Vector3 endPos   = { bulletPos.getX(), bulletPos.getY() + halfHeight, bulletPos.getZ() };
+    Vector3 cameraDir = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
+    Vector3 startPos = { bulletPos.getX(), bulletPos.getY(), bulletPos.getZ() };
+    
+    // Cast ray 10 units in front of camera
+    Vector3 endPos = {
+        startPos.x + cameraDir.x * 50.0f,
+        startPos.y + cameraDir.y * 50.0f,
+        startPos.z + cameraDir.z * 50.0f
+    };
 
-    testRayCast();
-
-    // btCollisionWorld::convexSweepTest()
+    
+    testRayCast(startPos, endPos);
+    
 }
 //this if should be moved to previews one
 //movement and jump controls

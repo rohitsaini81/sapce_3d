@@ -1,6 +1,6 @@
 #include "person.h"
 #include <iostream>
-
+#include "physics.h"
 // Bullet mass for dynamic body
 static const float PERSON_MASS = 1.0f;
 
@@ -60,6 +60,12 @@ void Person::Update(float deltaTime) {
         body->getMotionState()->getWorldTransform(trans);
         btVector3 btPos = trans.getOrigin();
         position = { (float)btPos.getX(), (float)btPos.getY(), (float)btPos.getZ() };
+
+        float capsuleVisualHeight = 1.5f + 2 * 0.2f; // total 1.9
+        float halfHeight = capsuleVisualHeight / 1.0f;
+        Vector3 startPos = { btPos.getX(), btPos.getY() , btPos.getZ() };
+        Vector3 endPos   = { btPos.getX() + halfHeight, btPos.getY() , btPos.getZ() };
+    // testRayCast(startPos, endPos);
     }
 
     if(Person::GetTypeName()=="Enemy"){
@@ -82,8 +88,11 @@ void Person::Render() const {
     DrawSphere({ position.x, position.y + 0.6f, position.z }, 0.3f, color);
     DrawSphere({ position.x, position.y - 0.6f, position.z }, 0.3f, color);
     float detectionRadius = 1.0f;
-DrawSphereWires(position, detectionRadius, 16, 16, RED);
-DrawCircle3D(position, detectionRadius, {0, 1, 0}, 90.0f, DARKGREEN);
+// DrawSphereWires(position, detectionRadius, 16, 16, RED);
+
+
+
+
 }
 
 Vector3 Person::GetPosition() const {

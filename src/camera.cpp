@@ -27,8 +27,7 @@ yaw -= mouseDelta.x * 0.1f;
 pitch -= mouseDelta.y * 0.1f;
 
 // Clamp pitch to avoid flipping
-if (pitch > 89.0f) pitch = 89.0f;
-if (pitch < -89.0f) pitch = -89.0f;
+
 if (pitch <=22.0f) pitch =22.0f;
 if (pitch >=80.0f) pitch = 80.0f;
 // std::cout<<"pitch"<<pitch<<std::endl;
