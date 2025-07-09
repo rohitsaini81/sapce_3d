@@ -286,6 +286,9 @@ if (IsKeyDown(KEY_W)) moveDir += btVector3(forward.x, 0, forward.z);
 if (IsKeyDown(KEY_S)) moveDir -= btVector3(forward.x, 0, forward.z);
 if (IsKeyDown(KEY_D)) moveDir += btVector3(right.x, 0, right.z);
 if (IsKeyDown(KEY_A)) moveDir -= btVector3(right.x, 0, right.z);
+if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)){playerMoveSpeed =50;}else{playerMoveSpeed=10;};
+
+
 
 // Keep vertical velocity
 btVector3 currentVel = playerBody->getLinearVelocity();

@@ -45,3 +45,6 @@
 # === Optional ===
 *.user
 *.tmp
+
+
+/build/*

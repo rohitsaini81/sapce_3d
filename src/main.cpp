@@ -45,8 +45,8 @@ int main() {
     INIT_BEFORE();
     InitPhysics();
         //--->
-const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/home/scientist/ArchLinux/work/raylib-cpp/rohit/";
-const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/home/scientist/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
+const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
+const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
     Model model = LoadModel(modelPath);
     // Model plane = LoadModel((project_dir+"src/assets/cube.glb").c_str());
     // if (plane.meshCount == 0) {std::cerr << "Failed to load plane model!" << std::endl;}
