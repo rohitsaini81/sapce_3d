@@ -15,6 +15,7 @@ Person::~Person() {
 void Person::InitPhysics(Vector3 pos) {
     // Create a simple capsule shape or box shape for the character
     shape = new btCapsuleShape(0.3f, 1.2f); // radius, height
+    isPlayerAround=0;
 
     // Set Bullet transform
     btTransform startTransform;
@@ -31,6 +32,7 @@ void Person::InitPhysics(Vector3 pos) {
 
     // Optional: make the body not rotate (like a character controller)
     body->setAngularFactor(0);
+          body->setActivationState(DISABLE_DEACTIVATION);
     
 
     // Note: You must add `body` to the Bullet dynamics world externally!
@@ -64,14 +66,55 @@ void Person::Update(float deltaTime) {
         float capsuleVisualHeight = 1.5f + 2 * 0.2f; // total 1.9
         float halfHeight = capsuleVisualHeight / 1.0f;
         Vector3 startPos = { btPos.getX(), btPos.getY() , btPos.getZ() };
-        Vector3 endPos   = { btPos.getX() + halfHeight, btPos.getY() , btPos.getZ() };
-    // testRayCast(startPos, endPos);
+        Vector3 endPos   = { btPos.getX() + halfHeight+10.0f, btPos.getY() , btPos.getZ() };
+
+        RayCastPerson(startPos, endPos);
+
+                    
+
+
+
     }
 
+    std::cout<<"check this "<<isPlayerAround<<"\n";
     if(Person::GetTypeName()=="Enemy"){
         // std::cout<<"enemy is ahead\n";
+        
+
+
+
+
+if (isPlayerAround == 1) {
+    Vector3 toPlayer = {
+        lastSeenPlayerPos.x - position.x,
+        lastSeenPlayerPos.y - position.y,
+        lastSeenPlayerPos.z - position.z
+    };
+
+    // Normalize direction
+    float length = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y + toPlayer.z * toPlayer.z);
+    if (length > 0.1f) {
+        toPlayer.x /= length;
+        toPlayer.y /= length;
+        toPlayer.z /= length;
     }
-    // AI or behavior logic could go here
+
+    // Set velocity toward player
+    const float speed = 3.0f;
+    btVector3 velocity(toPlayer.x * speed, 0, toPlayer.z * speed);
+    body->setLinearVelocity(velocity);
+} else {
+    body->setLinearVelocity(btVector3(0, 0, 0));
+}
+
+
+
+
+
+// AI or behavior logic could go here
+
+    }
+
 }
 
 void Person::Render() const {
@@ -88,7 +131,7 @@ void Person::Render() const {
     DrawSphere({ position.x, position.y + 0.6f, position.z }, 0.3f, color);
     DrawSphere({ position.x, position.y - 0.6f, position.z }, 0.3f, color);
     float detectionRadius = 1.0f;
-// DrawSphereWires(position, detectionRadius, 16, 16, RED);
+
 
 
 
@@ -124,5 +167,32 @@ std::string Person::GetTypeName() const {
         case PersonType::ALLY: return "Ally";
         case PersonType::NEUTRAL: return "Neutral";
         default: return "Unknown";
+    }
+}
+
+
+void Person::RayCastPerson(Vector3 from, Vector3 to){
+    isPlayerAround = 0;
+
+    for(float i=0.0f; i<50; i++) {
+        Vector3 end = { to.x, to.y , to.z + i / 2 };
+        btCollisionWorld::ClosestRayResultCallback rayCallback1(
+            btVector3(from.x, from.y, from.z),
+            btVector3(end.x, end.y, end.z)
+        );
+
+        dynamicsWorld->rayTest(btVector3(from.x, from.y, from.z), btVector3(end.x, end.y, end.z), rayCallback1);
+
+        if (rayCallback1.hasHit()) {
+            btCollisionObject* hitObject1 = const_cast<btCollisionObject*>(rayCallback1.m_collisionObject);
+            if (hitObject1 == playerBody) {
+                isPlayerAround = 1;
+                lastSeenPlayerPos = { end.x, end.y, end.z }; // remember where the player is
+                DrawRayLine(from, end);
+                return;
+            }
+        }
+
+        DrawRayLine(from, end);
     }
 }

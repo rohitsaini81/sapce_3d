@@ -22,7 +22,8 @@ void CREATE_ELEM() {
             if (dynamicsWorld && newElem->body) {
                 std::cout << "About to add rigid body\n";
                 dynamicsWorld->addRigidBody(newElem->body);
-                rigidBodies.push_back(newElem->body);
+                elementList.push_back(newElem);
+                // rigidBodies.push_back(newElem->body);
 
 
         

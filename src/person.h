@@ -19,6 +19,10 @@ public:
     // Update & render
     void Update(float deltaTime);
     void Render() const;
+    Vector3 lastSeenPlayerPos; 
+
+    //ray cast
+    void RayCastPerson(Vector3 from, Vector3 to);
 
     // Position
     Vector3 GetPosition() const;
@@ -30,6 +34,7 @@ public:
     // Type info
     PersonType GetType() const;
     std::string GetTypeName() const;
+    int isPlayerAround = 0;
 
 
     btRigidBody* body = nullptr;

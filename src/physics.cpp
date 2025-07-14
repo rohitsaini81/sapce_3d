@@ -93,7 +93,7 @@ playerBody->setActivationState(DISABLE_DEACTIVATION);
 dynamicsWorld->addRigidBody(playerBody);
 
 
-for(int i =0;i<10;i++){
+for(int i =0;i<5;i++){
     CREATE_ELEM();
 
 }
@@ -187,6 +187,7 @@ void testRayCast(Vector3 from, Vector3 to)
 
 
 
+        Color randomColor = GetRandomColor();
 
 
     void render(float deltaTime) {
@@ -198,15 +199,14 @@ void testRayCast(Vector3 from, Vector3 to)
     PersonA->Update(deltaTime);
     PersonA->Render();
 
-   for(int i=0;i<rigidBodies.size();i++){
+   for(int i=0;i<elementList.size();i++){
         btTransform trans;
-        btRigidBody* body = rigidBodies[i];
+        btRigidBody* body = elementList[i]->body;
         if (body->getMotionState()) {
             body->getMotionState()->getWorldTransform(trans);
         } else {
             trans = body->getCenterOfMassTransform();
         }
-        Color randomColor = GetRandomColor();
     
         btVector3 pos = trans.getOrigin();
         DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 2.0f, 2.0f, 2.0f, randomColor);
@@ -260,7 +260,7 @@ btVector3 bulletPos = trans.getOrigin();setPlayerY(bulletPos.getY());setPlayerX(
     };
 
     
-    testRayCast(startPos, endPos);
+    // testRayCast(startPos, endPos);
     
 }
 //this if should be moved to previews one
