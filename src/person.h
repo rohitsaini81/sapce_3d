@@ -23,7 +23,8 @@ public:
 
     //ray cast
     void RayCastPerson(Vector3 from, Vector3 to);
-
+    void MoveToPosition(Vector3 targetPos, float deltaTime);
+    Vector3 GetBodyPosition(btRigidBody* body);
     // Position
     Vector3 GetPosition() const;
     void SetPosition(Vector3 pos);

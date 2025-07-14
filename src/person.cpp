@@ -54,7 +54,6 @@ void Person::CleanupPhysics() {
         shape = nullptr;
     }
 }
-
 void Person::Update(float deltaTime) {
     // Sync position from physics body
     if (body) {
@@ -65,57 +64,54 @@ void Person::Update(float deltaTime) {
 
         float capsuleVisualHeight = 1.5f + 2 * 0.2f; // total 1.9
         float halfHeight = capsuleVisualHeight / 1.0f;
-        Vector3 startPos = { btPos.getX(), btPos.getY() , btPos.getZ() };
-        Vector3 endPos   = { btPos.getX() + halfHeight+10.0f, btPos.getY() , btPos.getZ() };
+        Vector3 startPos = { btPos.getX(), btPos.getY(), btPos.getZ() };
+        Vector3 endPos   = { btPos.getX() + halfHeight + 10.0f, btPos.getY(), btPos.getZ() };
 
         RayCastPerson(startPos, endPos);
-
-                    
-
-
-
     }
 
-    std::cout<<"check this "<<isPlayerAround<<"\n";
-    if(Person::GetTypeName()=="Enemy"){
-        // std::cout<<"enemy is ahead\n";
-        
+    std::cout << "check this " << isPlayerAround << "\n";
+
+    if (GetTypeName() == "Enemy") {
+        static float memoryTime = 3.0f; // seconds to remember player
+        static float memoryTimer = 0.0f;
+
+        if (isPlayerAround == 1) {
+            memoryTimer = memoryTime;  // Reset memory when player seen
+        } else {
+            memoryTimer -= deltaTime;
+            if (memoryTimer < 0.0f) memoryTimer = 0.0f;
+        }
+
+        if (memoryTimer > 0.0f) {
+            Vector3 toPlayer = {
+                lastSeenPlayerPos.x - position.x,
+                lastSeenPlayerPos.y - position.y,
+                lastSeenPlayerPos.z - position.z
+            };
+
+            float length = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y + toPlayer.z * toPlayer.z);
+            if (length > 0.1f) {
+                toPlayer.x /= length;
+                toPlayer.y /= length;
+                toPlayer.z /= length;
+            }
+
+            const float speed = 3.0f;
+            btVector3 velocity(toPlayer.x * speed, 0, toPlayer.z * speed);
+            body->setLinearVelocity(velocity);
+        }else if(GetBodyPosition(body).x>1.0f){
+Vector3 destination = {1.0f, 0.0f, 5.0f};
+MoveToPosition(destination, deltaTime);
 
 
-
-
-if (isPlayerAround == 1) {
-    Vector3 toPlayer = {
-        lastSeenPlayerPos.x - position.x,
-        lastSeenPlayerPos.y - position.y,
-        lastSeenPlayerPos.z - position.z
-    };
-
-    // Normalize direction
-    float length = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y + toPlayer.z * toPlayer.z);
-    if (length > 0.1f) {
-        toPlayer.x /= length;
-        toPlayer.y /= length;
-        toPlayer.z /= length;
+        }
+         else {
+            body->setLinearVelocity(btVector3(0, 0, 0));
+        }
     }
-
-    // Set velocity toward player
-    const float speed = 3.0f;
-    btVector3 velocity(toPlayer.x * speed, 0, toPlayer.z * speed);
-    body->setLinearVelocity(velocity);
-} else {
-    body->setLinearVelocity(btVector3(0, 0, 0));
 }
 
-
-
-
-
-// AI or behavior logic could go here
-
-    }
-
-}
 
 void Person::Render() const {
     Color color;
@@ -171,28 +167,94 @@ std::string Person::GetTypeName() const {
 }
 
 
-void Person::RayCastPerson(Vector3 from, Vector3 to){
+void Person::RayCastPerson(Vector3 origin, Vector3 /*unused*/) {
     isPlayerAround = 0;
 
-    for(float i=0.0f; i<50; i++) {
-        Vector3 end = { to.x, to.y , to.z + i / 2 };
-        btCollisionWorld::ClosestRayResultCallback rayCallback1(
-            btVector3(from.x, from.y, from.z),
-            btVector3(end.x, end.y, end.z)
-        );
+    const int numRays = 100;
+    const float visionAngle = 3.14159f; // 180 degrees
+    const float maxDistance = 20.0f;
 
-        dynamicsWorld->rayTest(btVector3(from.x, from.y, from.z), btVector3(end.x, end.y, end.z), rayCallback1);
+    auto castRaySet = [&](float baseAngleOffset) {
+        for (int i = 0; i < numRays; ++i) {
+            float angle = -visionAngle / 2 + (visionAngle * i / (numRays - 1));
+            angle += baseAngleOffset; // offset for direction
 
-        if (rayCallback1.hasHit()) {
-            btCollisionObject* hitObject1 = const_cast<btCollisionObject*>(rayCallback1.m_collisionObject);
-            if (hitObject1 == playerBody) {
-                isPlayerAround = 1;
-                lastSeenPlayerPos = { end.x, end.y, end.z }; // remember where the player is
-                DrawRayLine(from, end);
-                return;
+            float dx = cos(angle);
+            float dz = sin(angle);
+            float distance = maxDistance * (0.5f + 0.5f * fabs(dz)); // shorter in center, longer on sides
+
+            Vector3 end = {
+                origin.x + dx * distance,
+                origin.y,
+                origin.z + dz * distance
+            };
+
+            btCollisionWorld::ClosestRayResultCallback rayCallback(
+                btVector3(origin.x, origin.y, origin.z),
+                btVector3(end.x, end.y, end.z)
+            );
+
+            dynamicsWorld->rayTest(
+                btVector3(origin.x, origin.y, origin.z),
+                btVector3(end.x, end.y, end.z),
+                rayCallback
+            );
+
+            DrawRayLine(origin, end); // for debugging
+
+            if (rayCallback.hasHit()) {
+                btCollisionObject* hitObject = const_cast<btCollisionObject*>(rayCallback.m_collisionObject);
+                if (hitObject == playerBody) {
+                    isPlayerAround = 1;
+                    lastSeenPlayerPos = { end.x, end.y, end.z };
+                    return;
+                }
             }
         }
+    };
 
-        DrawRayLine(from, end);
+    // 🔄 Cast forward
+    castRaySet(0.0f);
+
+    // 🔄 Cast backward (add 180° offset)
+    // if (!isPlayerAround) {
+    //     castRaySet(3.14159f); // 180° in radians
+    // }
+}
+
+void Person::MoveToPosition(Vector3 targetPos, float deltaTime) {
+    Vector3 toTarget = {
+        targetPos.x - position.x,
+        0.0f,
+        targetPos.z - position.z
+    };
+
+    float distSq = toTarget.x * toTarget.x + toTarget.z * toTarget.z;
+
+    const float stopDistance = 0.2f; // How close is "close enough"
+    if (distSq < stopDistance * stopDistance) {
+        // Close enough, stop
+        body->setLinearVelocity(btVector3(0, 0, 0));
+        return;
     }
+
+    // Normalize direction
+    float length = sqrt(distSq);
+    toTarget.x /= length;
+    toTarget.z /= length;
+
+    const float speed = 3.0f;
+    btVector3 velocity(toTarget.x * speed, 0, toTarget.z * speed);
+    body->setLinearVelocity(velocity);
+}
+
+
+Vector3 Person::GetBodyPosition(btRigidBody* body) {
+    if (!body) return {0.0f, 0.0f, 0.0f};
+
+    btTransform trans;
+    body->getMotionState()->getWorldTransform(trans);
+    btVector3 origin = trans.getOrigin();
+
+    return { origin.getX(), origin.getY(), origin.getZ() };
 }
