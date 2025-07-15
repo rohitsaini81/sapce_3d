@@ -93,10 +93,10 @@ playerBody->setActivationState(DISABLE_DEACTIVATION);
 dynamicsWorld->addRigidBody(playerBody);
 
 
-for(int i =0;i<5;i++){
-    CREATE_ELEM();
+// for(int i =0;i<5;i++){
+//     CREATE_ELEM();
 
-}
+// }
 PersonA = new Person({getPlayerX(),getPlayerY(),getPlayerY()},PersonType::ENEMY);
 
 dynamicsWorld->addRigidBody(PersonA->body);

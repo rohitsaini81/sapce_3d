@@ -1,7 +1,7 @@
 #include "global_var.h"
 #include <iostream>
 #include "raylib.h"
-const std::string project_dir = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/home/scientist/ArchLinux/work/raylib-cpp/rohit/";
+const std::string project_dir = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
 float yaw = 0.0f;
 Vector3 playerPos = {0.0f, 0.0f, 0.0f};
 float playerMoveSpeed=20.0f;

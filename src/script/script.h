@@ -15,5 +15,5 @@ void run_lua_script(const char* filename);
 
 void load_config(const char* filename);
 time_t getFileLastModifiedTime(const std::string& path);
-
+int lua_CREATE_ELEM(lua_State* L);
 #endif

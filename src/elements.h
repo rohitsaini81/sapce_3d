@@ -26,5 +26,5 @@ public:
     std::string object_name;
 
     Elements(ElementType type, btDiscreteDynamicsWorld* dynamicsWorld);
-    void destroy();
+    void destroy(btDiscreteDynamicsWorld* dynamicsWorld);
 };

@@ -21,8 +21,16 @@ Elements::Elements(ElementType type, btDiscreteDynamicsWorld* dynamicsWorld) {
     body = new btRigidBody(info);
 }
 
-void Elements::destroy() {
-    delete body;
-    delete motion;
-    delete shape;
+void Elements::destroy(btDiscreteDynamicsWorld* dynamicsWorld) {
+    if (body) {
+        dynamicsWorld->removeRigidBody(body);
+
+        // delete body->getMotionState();  // delete motion state
+        // delete body;
+        // delete shape;
+
+        // body = nullptr;
+        // shape = nullptr;
+    }
 }
+

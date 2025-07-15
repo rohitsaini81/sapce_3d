@@ -5,7 +5,7 @@
 #include <string>
 #include "global_var.h"
 #include "camera.h"
-
+#include "objects.h"
 
 
 extern "C" {
@@ -29,13 +29,7 @@ int main() {
 
 
 
-    lua_State* L = luaL_newstate();
-    // luaL_openlibs(L);
-    luaL_dostring(L, "print('Hello from Lua 5.1.5')");
-    run_lua_script(scriptPath.c_str()); 
-    load_config(scriptPath.c_str());
-    time_t lastModified = getFileLastModifiedTime(scriptPath);
-
+   
 
 
 
@@ -110,12 +104,30 @@ lights[0] = CreateLight(
     
 
 
+
+
+    // Lua is here 
+
+
+
+     lua_State* L = luaL_newstate();
+    // luaL_openlibs(L);
+    luaL_dostring(L, "print('Hello from Lua 5.1.5')");
+    run_lua_script(scriptPath.c_str()); 
+    load_config(scriptPath.c_str());
+    time_t lastModified = getFileLastModifiedTime(scriptPath);
+
+
+
+    // end lua here
+
     while (!WindowShouldClose()) {
 
         time_t currentModified = getFileLastModifiedTime(scriptPath);
         if (currentModified != lastModified) {
             lastModified = currentModified;
             std::cout << "Reloading Lua script..." << std::endl;
+            if(!elementList.empty()){for(int i=0;i<elementList.size();i++){elementList[i]->destroy(dynamicsWorld);}elementList.clear();}
             run_lua_script(scriptPath.c_str());
             load_config(scriptPath.c_str());
 

@@ -70,7 +70,7 @@ void Person::Update(float deltaTime) {
         RayCastPerson(startPos, endPos);
     }
 
-    std::cout << "check this " << isPlayerAround << "\n";
+    // std::cout << "check this " << isPlayerAround << "\n";
 
     if (GetTypeName() == "Enemy") {
         static float memoryTime = 3.0f; // seconds to remember player
