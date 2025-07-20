@@ -27,7 +27,9 @@ return {
         print("creating a new object in world")
         for i = 1, 100 do
         print("i = " .. i)
-        CREATE_ELEM("BOX")
+        CREATE_ELEM("CUBE","path","/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/gltf/test.glb")
+        -- CREATE_ELEM("modelpath","heightxwidth","x-y")
+
         end
   
 

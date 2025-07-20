@@ -1,31 +1,25 @@
-// elements.h
-#pragma once
-
+#ifdef
 #include <btBulletDynamicsCommon.h>
 #include <iostream>
 #include <btBulletDynamicsCommon.h>
 #include "raylib.h"
-enum class ElementType {
-    BOX,
-    CUBE
-};
 
+struct UModel {
 
-extern btVector3 inertia;
-
-
-
-
-
-class Elements {
-public:
     btCollisionShape* shape = nullptr;
     btDefaultMotionState* motion = nullptr;
     btRigidBody* body = nullptr;
     float mass = 1.0f;
-    std::string object_name;
-    Model* model;
+    std::string model_path;
+    Model model;
+    btVector3 inertia;
 
-    Elements(ElementType type, btDiscreteDynamicsWorld* dynamicsWorld, Model* Umodel);
+
+    UModel(btDiscreteDynamicsWorld* dynamicsWorld, const char* modelPath);
+    Update(float delta);
     void destroy(btDiscreteDynamicsWorld* dynamicsWorld);
+
 };
+
+
+#endif

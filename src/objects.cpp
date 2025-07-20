@@ -14,7 +14,7 @@ void CREATE_ELEM() {
     try {
         if (dynamicsWorld) {
             std::cout << "fine working ?? " << std::endl;
-            Elements* newElem = new Elements(ElementType::BOX, dynamicsWorld);
+            Elements* newElem = new Elements(ElementType::BOX, dynamicsWorld, nullptr);
             std::cout << "Note------------------------" << newElem->mass << std::endl;
             std::cout << "dynamicsWorld ptr: " << dynamicsWorld << std::endl;
             std::cout << "newElem.body ptr: " << newElem->body << std::endl;

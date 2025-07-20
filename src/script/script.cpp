@@ -13,6 +13,7 @@ extern "C" {
 #include "physics.h" 
 #include "objects.h"
 #include "global_var.h"
+
 float health=0.1f;
 
 
@@ -167,15 +168,23 @@ time_t getFileLastModifiedTime(const std::string& path) {
 
 int lua_CREATE_ELEM(lua_State* L) {
     const char* typeStr = luaL_checkstring(L, 1); // Get 1st arg (element type)
-
+    const char* typeStr2 = luaL_checkstring(L, 2); // Get 1st arg (element type)
+    const char* mpath =  luaL_checkstring(L, 3); 
     ElementType type;
     std::cout<<"argument : "<<typeStr<<"\n";
+    std::cout<<"argument : "<<typeStr2<<"\n";
+    Model* mmodel = new Model(LoadModel(mpath));
 
+std::cout<<mpath;
+    
     // Map string to ElementType enum
     if (strcmp(typeStr, "BOX") == 0) {
         type = ElementType::BOX;
         // return 0;
-    }else {
+    }else if (strcmp(typeStr, "CUBE") == 0){
+         type = ElementType::CUBE;
+    }
+    else {
         std::cerr << "Unknown element type: " << typeStr << std::endl;
         return 0;
     }
@@ -184,7 +193,7 @@ int lua_CREATE_ELEM(lua_State* L) {
 
 
         if (dynamicsWorld) {
-            Elements* newElem = new Elements(type, dynamicsWorld);
+            Elements* newElem = new Elements(type, dynamicsWorld, mmodel);
             std::cout << "Created element of type: " << typeStr << "\n";
             std::cout << "Mass: " << newElem->mass << "\n";
 

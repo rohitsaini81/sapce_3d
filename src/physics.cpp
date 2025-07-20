@@ -209,13 +209,18 @@ void testRayCast(Vector3 from, Vector3 to)
         }
     
         btVector3 pos = trans.getOrigin();
-        DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 2.0f, 2.0f, 2.0f, randomColor);
-        // std::cout << "Position: " << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << std::endl;
-        // std::cout << "Velocity: " << elem->body->getLinearVelocity().getY() << std::endl;
-    }
+
     
+if (elementList[i] && elementList[i]->model) {
+    DrawModel(*elementList[i]->model, {pos.getX(), pos.getY(), pos.getZ()}, 1.0f, WHITE);
+} else {
+    DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 2.0f, 2.0f, 2.0f, randomColor);
+    // std::cerr << "Warning: element or model is null at index " << i << std::endl;
+}
 
 
+
+   }
    if (boxBody!=nullptr && boxBody->getMotionState() !=nullptr) {
     btTransform trans;
     boxBody->getMotionState()->getWorldTransform(trans);
