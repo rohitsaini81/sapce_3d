@@ -1,7 +1,7 @@
 #include "camera.h"
 #include "raylib.h"
 #include "raymath.h"
-#include "global_var.h"
+#include "../ETC/global_var.h"
 #include "iostream"
 Camera camera = {0};
 float pitch = 15.0f;  // Slightly looking down

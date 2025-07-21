@@ -2,13 +2,13 @@
 #include <iostream>
 #include "raylib.h"
 #include "raymath.h"
-#include "global_var.h"
-#include "camera.h"
-#include "objects.h"
+#include "../ETC/global_var.h"
+#include "Controls/camera.h"
+#include "../3dObjects/objects.h"
 #include "script.h"
 #include <lua.h>
-#include "person.h"
-#include "Models.h"
+#include "../NPC/person.h"
+#include "../3dObjects/Models.h"
 // Bullet globals
 btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
 btBroadphaseInterface* broadphase = nullptr;

@@ -55,14 +55,14 @@ include_directories(
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/physics.cpp
-    src/global_var.cpp
-    src/camera.cpp
-    src/objects.cpp
-    src/elements.cpp
+    src/ETC/global_var.cpp
+    src/Controls/camera.cpp
+    src/3dObjects/objects.cpp
+    src/3dObjects/elements.cpp
     src/script/script.cpp
-    src/person.cpp
-    src/model_obj.cpp
-    src/Models.cpp
+    src/NPC/person.cpp
+    src/3dObjects/model_obj.cpp
+    src/3dObjects/Models.cpp
     externals/rlImGui/rlImGui.h
     externals/imgui/imgui.h
     ${IMGUI_SOURCES}

@@ -4,7 +4,7 @@
 #include "iostream"
 #include "elements.h" 
 #include "LinearMath/btAlignedObjectArray.h" 
-#include "global_var.h"
+#include "../ETC/global_var.h"
 #include "Models.h"
 Elements* objectal[4]; // array of pointers
 // std::vector<Elements> elementList;

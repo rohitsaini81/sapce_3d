@@ -11,8 +11,8 @@ extern "C" {
 #include <sys/stat.h>
 
 #include "physics.h" 
-#include "objects.h"
-#include "global_var.h"
+#include "../3dObjects/objects.h"
+#include "../ETC/global_var.h"
 
 float health=0.1f;
 

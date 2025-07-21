@@ -3,9 +3,9 @@
 #include "raymath.h"
 #include <iostream>
 #include <string>
-#include "global_var.h"
-#include "camera.h"
-#include "objects.h"
+#include "ETC/global_var.h"
+#include "Controls/camera.h"
+#include "3dObjects/objects.h"
 
 
 extern "C" {
@@ -17,37 +17,19 @@ extern "C" {
 #include <filesystem>
 
 
-
-#define RLIGHTS_IMPLEMENTATION
-#include "rlights.h"
-#define GLSL_VERSION            330
-
-
-
-
-
-
-
-
 #include "rlImGui.h"	
 #include "imgui.h"
 
 
 int main() {
 
-    const std::string scriptPath = project_dir+"src/script/config.lua";
-
-
-
-
-   
-
-
-
+    
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
     rlImGuiSetup(true); 
+    bool open=true;
+
     ImGuiIO& io = ImGui::GetIO();
 io.Fonts->AddFontDefault();
 
@@ -76,56 +58,11 @@ const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/A
     SetTargetFPS(60);
     SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
 
-    const std::string vshader = project_dir+"src/shaders/phong.vs";
-    const std::string fshader = project_dir+"src/shaders/phong.fs";
-
-
-    Shader shader = LoadShader(TextFormat(vshader.c_str(), GLSL_VERSION),
-    TextFormat(fshader.c_str(), GLSL_VERSION));
-// Get some required shader locations
-shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
-// NOTE: "matModel" location name is automatically assigned on shader loading, 
-// no need to get the location again if using that uniform name
-//shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
-
-// Ambient light level (some basic lighting)
-int ambientLoc = GetShaderLocation(shader, "ambient");
-// SetShaderValue(shader, ambientLoc, (float[4]){ 0.1f, 0.1f, 0.1f, 1.0f }, SHADER_UNIFORM_VEC4);
-SetShaderValue(shader, ambientLoc, (float[4]){ 0.3f, 0.3f, 0.3f, 1.0f }, SHADER_UNIFORM_VEC4);
-
-
-
-    // Create lights
-    Light lights[MAX_LIGHTS] = { 0 };
-    Color sunLightColor = (Color){ 255, 244, 214, 255 };  // More realistic sunlight
-lights[0] = CreateLight(
-    LIGHT_DIRECTIONAL,
-    (Vector3){ 0, 100, 0 },      // Position (for optional visual debugging)
-    (Vector3){ 0, -1, 0 },      // Direction: Downward like sunlight
-    Vector3Zero(),             // Target (not used for directional light)
-    sunLightColor,                    // Light color
-    shader
-);
-
-// After (Directional Sun Light)
-// lights[0] = CreateLight(LIGHT_DIRECTIONAL,
-//     (Vector3){ 0, 10, 0 },     // Position (not used for lighting, just for optional visualization)
-//     (Vector3){ 0, -1, 0 },     // Direction: straight down like sunlight
-//     YELLOW,
-//     shader);
-
-    for (int i = 0; i < model.materialCount; i++) {
-        model.materials[i].shader = shader;
-    }
-    
-
 
 
 
     // Lua is here 
-
-
-
+    const std::string scriptPath = project_dir+"src/script/config.lua";
      lua_State* L = luaL_newstate();
     // luaL_openlibs(L);
     luaL_dostring(L, "print('Hello from Lua 5.1.5')");
@@ -150,18 +87,7 @@ lights[0] = CreateLight(
         }
 
         float delta = GetFrameTime();
-        // Update the shader with the camera view vector (points towards { 0.0f, 0.0f, 0.0f })
-        float cameraPos[3] = { camera.position.x, camera.position.y, camera.position.z };
-        SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
-        
-    
-           // Update light values (actually, only enable/disable them)
-           for (int i = 0; i < MAX_LIGHTS; i++) UpdateLightValues(shader, lights[i]);
-           //----------------------------------------------------------------------------------
-   
-           // Draw
-           //--------
-
+ 
 
         // Handle animation
         //--->
@@ -183,9 +109,21 @@ lights[0] = CreateLight(
 if (!ImGui::GetIO().WantCaptureMouse) {
     // Process camera/mouse here
     UPDATE_CAMERA();
+  
 }
 
 
+if (IsKeyPressed(KEY_X)) {
+    open = !open;
+        if (open) {
+        EnableCursor();   // Show and unlock the mouse for ImGui
+    } else {
+        DisableCursor();  // Hide and lock the mouse for game control
+    }
+    std::cout << "Toggled ImGui window: " << (open ? "OPEN" : "CLOSED") << std::endl;
+}
+
+           
 
 
         // Render
@@ -193,7 +131,7 @@ if (!ImGui::GetIO().WantCaptureMouse) {
         ClearBackground(BLACK);
         // ClearBackground(RAYWHITE);
         BeginMode3D(camera);
-        BeginShaderMode(shader);
+
         DrawCube({ 0.0f, 0.0f, 0.0f }, 20.0f, 0.1f, 20.0f, WHITE);
         
         DrawPlane(Vector3Zero(), (Vector2) { 10.0, 10.0 }, WHITE);
@@ -203,28 +141,13 @@ if (!ImGui::GetIO().WantCaptureMouse) {
         // DrawModel(tempModel,planePos,1.0f,WHITE);
 
 
-      render(delta);
+        render(delta);
 
 
 
-        EndShaderMode();
 
 
 
-        for (int i = 0; i < MAX_LIGHTS; i++) {
-            if (lights[i].type == LIGHT_POINT) {
-                if (lights[i].enabled)
-                    DrawSphereEx(lights[i].position, 0.2f, 8, 8, lights[i].color);
-                else
-                    DrawSphereWires(lights[i].position, 0.2f, 8, 8, ColorAlpha(lights[i].color, 0.3f));
-            } else if (lights[i].type == LIGHT_DIRECTIONAL) {
-                // Visualize directional light with a line (like sunlight)
-                Vector3 endPoint = Vector3Add(lights[i].position, Vector3Scale(lights[i].direction, 2.0f));
-                DrawLine3D(lights[i].position, endPoint, lights[i].color);
-            }
-        }
-        
-        
 
 
         playerPos.x=getPlayerX();
@@ -234,17 +157,13 @@ if (!ImGui::GetIO().WantCaptureMouse) {
 
 
         // DrawModelEx(plane, planePos, {1.0f, 0.0f, 0.0f}, -90.0f, {1.0f, 1.0f, 1.0f}, WHITE);
-        DrawGrid(10, 1.0f);
+        // DrawGrid(10, 1.0f);
 
         EndMode3D();
 
-        DrawText("Use WASD to move, SPACE to jump", 10, 10, 20, DARKGRAY);
-
-
-
-
-
-bool open=true;
+        DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
+        
+        
 
 
 
@@ -252,7 +171,10 @@ bool open=true;
         rlImGuiBegin();
 ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
 // ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
-if (ImGui::Begin("Test Window", &open, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+
+if (open) {
+
+if (ImGui::Begin("Menu Window", &open, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
     ImGui::TextUnformatted(ICON_FA_JEDI);
         if (ImGui::Button("Click Me")) {
         std::cout << "Button clicked!" << std::endl;
@@ -276,8 +198,9 @@ if (ImGui::Begin("Test Window", &open, ImGuiWindowFlags_AlwaysVerticalScrollbar)
     ImGui::EndChild();
 
     ImGui::End();
+    
 }
-
+}
 rlImGuiEnd();
 
 
@@ -305,7 +228,6 @@ rlImGuiEnd();
     UnloadModel(model);
     UnloadModel(plane);
     CleanupPhysics();
-    UnloadShader(shader);   // Unload shader
     CloseWindow();
 
     return 0;
