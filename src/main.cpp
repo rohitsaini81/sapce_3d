@@ -7,6 +7,11 @@
 #include "Controls/camera.h"
 #include "3dObjects/objects.h"
 
+#include "raylib.h"
+#include <thread>
+#include <atomic>
+#include <chrono>
+#include "iostream"
 
 extern "C" {
   #include "lua.h"
@@ -20,21 +25,34 @@ extern "C" {
 #include "rlImGui.h"	
 #include "imgui.h"
 
+void LoadResources(std::atomic<bool> &loadingDone) {
 
+    INIT_BEFORE();
+    InitPhysics();
+    CAM_INIT();
+
+    loadingDone = true;
+}
 int main() {
 
     
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
+    std::atomic<bool> loadingDone = false;
+    // Start resource loading in background thread
+    std::thread loadingThread(LoadResources, std::ref(loadingDone));
+
+
+    int dotCounter = 0;
+    float timer = 0.0f;
     rlImGuiSetup(true); 
-    bool open=true;
+    bool open=false;
 
     ImGuiIO& io = ImGui::GetIO();
 io.Fonts->AddFontDefault();
 
-    INIT_BEFORE();
-    InitPhysics();
+
         //--->
 const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
 const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
@@ -48,7 +66,6 @@ const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/A
     float animFrameCounter = 0.0f;
 
 
-    CAM_INIT();
     // Player state
     Vector3 planePos = {2.0f, 0.0f, 2.0f};
     float velocityY = 0.0f;
@@ -74,7 +91,43 @@ const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/A
 
     // end lua here
 
+
+while (!WindowShouldClose()) {
+        if (!loadingDone) {
+            // Animate the dots (e.g. "Loading.", "Loading..", "Loading...")
+            timer += GetFrameTime();
+            if (timer >= 0.5f) {
+                dotCounter = (dotCounter + 1) % 4;  // Cycle through 0 to 3
+                timer = 0.0f;
+            }
+
+            BeginDrawing();
+            ClearBackground(RAYWHITE);
+
+            std::string loadingText = "Loading";
+            for (int i = 0; i < dotCounter; ++i) loadingText += ".";
+
+            DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+
+            EndDrawing();
+        } else {
+            // Done loading, break and show your actual scene
+            break;
+        }
+    }
+
+    // Make sure thread has finished
+    if (loadingThread.joinable()) loadingThread.join();
+
+
+
+
+
+
+
+
     while (!WindowShouldClose()) {
+
 
         time_t currentModified = getFileLastModifiedTime(scriptPath);
         if (currentModified != lastModified) {
@@ -115,14 +168,13 @@ if (!ImGui::GetIO().WantCaptureMouse) {
 
 if (IsKeyPressed(KEY_X)) {
     open = !open;
+    std::cout << "Toggled ImGui window: " << (open ? "OPEN" : "CLOSED") << std::endl;
+}
         if (open) {
         EnableCursor();   // Show and unlock the mouse for ImGui
     } else {
         DisableCursor();  // Hide and lock the mouse for game control
     }
-    std::cout << "Toggled ImGui window: " << (open ? "OPEN" : "CLOSED") << std::endl;
-}
-
            
 
 
