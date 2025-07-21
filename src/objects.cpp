@@ -4,11 +4,43 @@
 #include "iostream"
 #include "elements.h" 
 #include "LinearMath/btAlignedObjectArray.h" 
+#include "global_var.h"
+#include "Models.h"
 Elements* objectal[4]; // array of pointers
 // std::vector<Elements> elementList;
 std::vector<Elements*> elementList;
 std::vector<btRigidBody*> rigidBodyList;
 btAlignedObjectArray<btRigidBody*> rigidBodies;
+btRigidBody* TerrainRegidBody;
+
+
+void Init_Elems(){
+   try{ 
+    // Model levelModel = LoadModel("assets/american_road_intersection.glb");
+    Model levelModel = LoadModel((project_dir+"src/assets/american_road_intersection.glb").c_str());
+
+    if (levelModel.meshCount == 0) {
+    std::cerr << "Warning: Loaded model has no meshes." << std::endl;
+    return;
+}
+btCollisionShape* shape = CreateStaticCollisionShapeFromModel(levelModel);
+
+// Create rigid body
+btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1), btVector3(0,0,0)));
+
+btRigidBody::btRigidBodyConstructionInfo rbInfo(0, motionState, shape, btVector3(0, 0, 0));
+TerrainRegidBody = new btRigidBody(rbInfo);
+
+if (shape && motionState && TerrainRegidBody) {
+    dynamicsWorld->addRigidBody(TerrainRegidBody);
+    // MyModel obj(TerrainRegidBody, levelModel);
+    models.emplace_back(TerrainRegidBody, levelModel);
+}   
+}
+catch (const std::exception& e) {
+    std::cerr << "Error in Init_Elems(): " << e.what() << std::endl;
+}
+}
 
 void CREATE_ELEM() {
     try {

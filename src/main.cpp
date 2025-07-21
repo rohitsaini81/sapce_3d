@@ -22,6 +22,17 @@ extern "C" {
 #include "rlights.h"
 #define GLSL_VERSION            330
 
+
+
+
+
+
+
+
+#include "rlImGui.h"	
+#include "imgui.h"
+
+
 int main() {
 
     const std::string scriptPath = project_dir+"src/script/config.lua";
@@ -36,14 +47,19 @@ int main() {
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
+    rlImGuiSetup(true); 
+    ImGuiIO& io = ImGui::GetIO();
+io.Fonts->AddFontDefault();
+
     INIT_BEFORE();
     InitPhysics();
         //--->
 const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
 const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
     Model model = LoadModel(modelPath);
-    // Model plane = LoadModel((project_dir+"src/assets/cube.glb").c_str());
-    // if (plane.meshCount == 0) {std::cerr << "Failed to load plane model!" << std::endl;}
+    Model tempModel = LoadModel((project_dir+"src/assets/american_road_intersection.glb").c_str());
+    Model plane = LoadModel((project_dir+"src/assets/cube.glb").c_str());
+    if (plane.meshCount == 0) {std::cerr << "Failed to load plane model!" << std::endl;}
 
     int animCount = 0;
     ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
@@ -52,7 +68,7 @@ const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/A
 
     CAM_INIT();
     // Player state
-    Vector3 planePos = {2.0f, 4.0f, 2.0f};
+    Vector3 planePos = {2.0f, 0.0f, 2.0f};
     float velocityY = 0.0f;
     float gravity = 0.1f;
     float speed = 5.0f;
@@ -163,9 +179,11 @@ lights[0] = CreateLight(
 
 
 
-        UPDATE_CAMERA();
-
-
+// Skip camera updates when interacting with ImGui
+if (!ImGui::GetIO().WantCaptureMouse) {
+    // Process camera/mouse here
+    UPDATE_CAMERA();
+}
 
 
 
@@ -182,7 +200,7 @@ lights[0] = CreateLight(
 
 
         DrawModel(model, playerPos, 1.0f, WHITE);
-
+        // DrawModel(tempModel,planePos,1.0f,WHITE);
 
 
       render(delta);
@@ -221,8 +239,65 @@ lights[0] = CreateLight(
         EndMode3D();
 
         DrawText("Use WASD to move, SPACE to jump", 10, 10, 20, DARKGRAY);
-        EndDrawing();
+
+
+
+
+
+bool open=true;
+
+
+
+
+        rlImGuiBegin();
+ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
+// ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
+if (ImGui::Begin("Test Window", &open, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+    ImGui::TextUnformatted(ICON_FA_JEDI);
+        if (ImGui::Button("Click Me")) {
+        std::cout << "Button clicked!" << std::endl;
     }
+    ImGui::SameLine();
+    ImGui::Text("Camera Target: X %.2f Y %.2f", camera.target.x, camera.target.y);
+  bool show_demo_window = true;
+    static float f = 0.0f;
+                static int counter = 0;
+                ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);  
+    ImGui::BeginChild("ScrollRegion", ImVec2(0, 0), true);
+
+               if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+    for (int i = 0; i < 50; i++) {
+        ImGui::Text("Move Tool %d", i);
+    }
+    ImGui::EndChild();
+
+    ImGui::End();
+}
+
+rlImGuiEnd();
+
+
+        EndDrawing();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
 
     // Cleanup
         //--->

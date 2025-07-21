@@ -3,6 +3,8 @@
 
 #include <string>
 #include "raylib.h"
+#include <btBulletDynamicsCommon.h>
+
 extern const std::string project_dir;
 extern float yaw;
 extern Model plane;
@@ -13,6 +15,7 @@ extern void INIT_BEFORE();
 extern Color g_scriptColor;
 extern float health;
 
+btBvhTriangleMeshShape* CreateStaticCollisionShapeFromModel(const Model& model);
 
 
 #endif

@@ -13,6 +13,22 @@ set(RAYLIB_CPP_DIR "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLi
 add_subdirectory(lua-5.1.5)
 
 # ---- Include Directories ----
+
+
+include_directories(externals/rlImGui)
+include_directories(externals/imgui)
+
+
+
+    # Add sources
+set(IMGUI_SOURCES
+    ./externals/imgui/imgui.cpp
+    ./externals/imgui/imgui_draw.cpp
+    ./externals/imgui/imgui_tables.cpp
+    ./externals/imgui/imgui_widgets.cpp
+    ./externals/rlImGui/rlImGui.cpp
+)
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/script
@@ -45,6 +61,11 @@ add_executable(${PROJECT_NAME}
     src/elements.cpp
     src/script/script.cpp
     src/person.cpp
+    src/model_obj.cpp
+    src/Models.cpp
+    externals/rlImGui/rlImGui.h
+    externals/imgui/imgui.h
+    ${IMGUI_SOURCES}
     )
 
 # ---- Linking ----

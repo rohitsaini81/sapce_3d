@@ -8,6 +8,7 @@
 #include "script.h"
 #include <lua.h>
 #include "person.h"
+#include "Models.h"
 // Bullet globals
 btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
 btBroadphaseInterface* broadphase = nullptr;
@@ -198,6 +199,20 @@ void testRayCast(Vector3 from, Vector3 to)
 
     PersonA->Update(deltaTime);
     PersonA->Render();
+
+
+    for (const MyModel& obj : models) {
+    btTransform trans;
+    obj.rigibBodyofModel->getMotionState()->getWorldTransform(trans);
+    Vector3 pos = {
+        trans.getOrigin().getX(),
+        trans.getOrigin().getY(),
+        trans.getOrigin().getZ()
+    };
+
+    DrawModel(obj.onlyModel, pos, 1.0f, WHITE);
+    }
+
 
    for(int i=0;i<elementList.size();i++){
         btTransform trans;

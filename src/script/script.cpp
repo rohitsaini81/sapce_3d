@@ -173,7 +173,10 @@ int lua_CREATE_ELEM(lua_State* L) {
     ElementType type;
     std::cout<<"argument : "<<typeStr<<"\n";
     std::cout<<"argument : "<<typeStr2<<"\n";
-    Model* mmodel = new Model(LoadModel(mpath));
+    Model* mmodel = nullptr;
+    if(strlen(mpath)>4){
+        mmodel = new Model(LoadModel(mpath));
+    }
 
 std::cout<<mpath;
     
@@ -183,6 +186,7 @@ std::cout<<mpath;
         // return 0;
     }else if (strcmp(typeStr, "CUBE") == 0){
          type = ElementType::CUBE;
+
     }
     else {
         std::cerr << "Unknown element type: " << typeStr << std::endl;
