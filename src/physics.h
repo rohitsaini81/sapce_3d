@@ -2,7 +2,8 @@
 #define PHYSICS_H
 
 #include "raylib.h"
-#include <btBulletDynamicsCommon.h>
+// #include <btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 
 // External declarations of Bullet components
 extern btDiscreteDynamicsWorld* dynamicsWorld;

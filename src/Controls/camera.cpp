@@ -15,6 +15,7 @@ void CAM_INIT(){
 
 }
 
+
 float cameraYaw = 0.0f;
 float cameraPitch = 0.0f;
 const float mouseSensitivity = 0.003f;

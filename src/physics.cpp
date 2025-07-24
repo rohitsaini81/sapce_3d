@@ -9,6 +9,7 @@
 #include <lua.h>
 #include "../NPC/person.h"
 #include "../3dObjects/Models.h"
+#include "player.h"
 // Bullet globals
 btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
 btBroadphaseInterface* broadphase = nullptr;
@@ -25,20 +26,10 @@ btCollisionShape* boxShape = nullptr;
 btDefaultMotionState* boxMotion = nullptr;
 btRigidBody* boxBody = nullptr;
 
-//player physics
-
-btCollisionShape* playerShape = nullptr;
-btTransform startTransform;
-btDefaultMotionState* motionState = nullptr;
-btRigidBody* playerBody = nullptr;
 
 
 
 
-// Player position
-float playerX = 0.0f;
-float playerY = 0.0f;
-float playerZ = 0.0f;
 Person* PersonA =nullptr;
 void InitPhysics() {
     // Bullet physics world setup
@@ -69,31 +60,6 @@ void InitPhysics() {
 
 
 
-
-    // float capsuleRadius = 0.2f;     // half of 0.4m
-    // float capsuleHeight = 1.5f;     // total height 1.8m = 1.4 + 0.2*2
-    // btScalar mass = 1.0f;
-
-    // playerShape = new btCapsuleShape(capsuleRadius, capsuleHeight);
-    btScalar mass = 1.0f;
-
-// Replace capsule with box (half extents = fullSize / 2)
-btVector3 halfExtents(0.2f, 0.95f, 0.2f);  // 0.4 x 1.9 x 0.4 box
-playerShape = new btBoxShape(halfExtents);
-    startTransform.setIdentity();
-startTransform.setOrigin(btVector3(0, 5, 0)); // Starting position
-
-playerShape->calculateLocalInertia(mass, inertia);
-
-motionState = new btDefaultMotionState(startTransform);
-btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, playerShape, inertia);
-playerBody = new btRigidBody(rbInfo);
-playerBody->setAngularFactor(btVector3(0, 1, 0));  // allow rotation only on Y-axi
-playerBody->setActivationState(DISABLE_DEACTIVATION);
-// Add to physics world
-dynamicsWorld->addRigidBody(playerBody);
-
-
 // for(int i =0;i<5;i++){
 //     CREATE_ELEM();
 
@@ -101,6 +67,7 @@ dynamicsWorld->addRigidBody(playerBody);
 PersonA = new Person({getPlayerX(),getPlayerY(),getPlayerY()},PersonType::ENEMY);
 
 dynamicsWorld->addRigidBody(PersonA->body);
+Player_Init(dynamicsWorld);
 // rigidBodies.push_back(PersonA->body);
 
 
@@ -199,6 +166,9 @@ void testRayCast(Vector3 from, Vector3 to)
 
     PersonA->Update(deltaTime);
     PersonA->Render();
+    Player_Update(deltaTime);
+Player_Render();
+
 
 
     for (const MyModel& obj : models) {
@@ -328,17 +298,4 @@ if (IsKeyPressed(KEY_SPACE)) {playerBody->applyCentralImpulse(btVector3(0, 5, 0)
 
 
 }
-
-
-
-
-
-
-
-void setPlayerX(float X) { playerX = X; }
-void setPlayerY(float Y) { playerY = Y; }
-void setPlayerZ(float Z) { playerZ = Z; }
-float getPlayerX() { return playerX; }
-float getPlayerY() { return playerY; }
-float getPlayerZ() { return playerZ; }
 

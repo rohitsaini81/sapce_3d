@@ -65,6 +65,7 @@ add_executable(${PROJECT_NAME}
     src/3dObjects/Models.cpp
     externals/rlImGui/rlImGui.h
     externals/imgui/imgui.h
+    src/player.cpp
     ${IMGUI_SOURCES}
     )
 
