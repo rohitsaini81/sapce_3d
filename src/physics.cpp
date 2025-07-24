@@ -68,7 +68,7 @@ void InitPhysics() {
 // dynamicsWorld->addRigidBody(PersonA->body);
 // rigidBodies.push_back(PersonA->body);
 
-
+Init_Elems();
 
 
 

@@ -1,91 +1,116 @@
 #include "player.h"
 #include "Controls/camera.h"
+#include <cstddef>
 #include <iostream>
 #include "raymath.h"
 #include "ETC/global_var.h"
+#include <bullet/BulletDynamics/Dynamics/btRigidBody.h>
 #include <raylib.h>
 
 // Global instance definition
+MyModel1* user;
+Model tempModel1;
 
 void Player_Init(btDiscreteDynamicsWorld* world) {
     const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
 
-    // player->shape = new btBoxShape(btVector3(0.2f, 0.95f, 0.2f));
-    // player->transform.setIdentity();
-    // player->transform.setOrigin(btVector3(0, 5, 0));
-    // player->shape->calculateLocalInertia(1.0f, player->inertia);
+    btCollisionShape* shape = new btBoxShape(btVector3(0.2f, 0.95f, 0.2f));
+    btTransform transform;
+    btVector3 inertia;
 
-    // player->motionState = new btDefaultMotionState(player->transform);
+    transform.setIdentity();
+    transform.setOrigin(btVector3(0, 5, 0));
+    shape->calculateLocalInertia(1.0f,inertia);
+    btDefaultMotionState* motionState =  new btDefaultMotionState(transform);;
 
-    // btRigidBody::btRigidBodyConstructionInfo rbInfo(
-    //     1.0f, player->motionState, player->shape, player->inertia);
 
-    // player->body = new btRigidBody(rbInfo);
-    // player->body->setAngularFactor(btVector3(0, 1, 0));
-    // player->body->setActivationState(DISABLE_DEACTIVATION);
+    btRigidBody::btRigidBodyConstructionInfo rbInfo(
+        1.0f, motionState, shape,inertia);
 
-    // world->addRigidBody(player->body);
+    btRigidBody* body = new btRigidBody(rbInfo);
+    body->setAngularFactor(btVector3(0, 1, 0));
+    body->setActivationState(DISABLE_DEACTIVATION);
+
+    world->addRigidBody(body);
+
+
+
+
+
+Model levelModel = LoadModel(modelPath);
+tempModel1 = LoadModel(modelPath);
+
+if (levelModel.meshCount == 0) {
+    std::cerr << "Warning: Loaded model has no meshes." << std::endl;
+    return;
 }
 
-// void Player_Update(float deltaTime) {
-//     if (!UPLAYER || !UPLAYER->body || !UPLAYER->body->getMotionState()) return;
+// ✅ This should not be inside the `if`
+user = new MyModel1(body, levelModel);
 
-//     btTransform trans;
-//     UPLAYER->body->getMotionState()->getWorldTransform(trans);
-//     btVector3 pos = trans.getOrigin();
+}
 
-//     UPLAYER->setPosition(pos.getX(), pos.getY(), pos.getZ());
+void Player_Update(float deltaTime) {
+    if (!user || !user->playerBody || !user->playerBody->getMotionState()) return;
 
-//     if (UPLAYER->body->getLinearVelocity()) {
-//         btVector3 vel(0, UPLAYER->body->getLinearVelocity().getY(), 0);
+    btTransform trans;
+    user->playerBody->getMotionState()->getWorldTransform(trans);
+    btVector3 pos = trans.getOrigin();
 
-//         Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
-//         Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, { 0, 1, 0 }));
-//         forward.y = 0;
-//         right.y = 0;
 
-//         btVector3 moveDir(0, 0, 0);
+    if (user->playerBody->getLinearVelocity()) {
+        btVector3 vel(0, user->playerBody->getLinearVelocity().getY(), 0);
 
-//         if (IsKeyDown(KEY_W)) moveDir += btVector3(forward.x, 0, forward.z);
-//         if (IsKeyDown(KEY_S)) moveDir -= btVector3(forward.x, 0, forward.z);
-//         if (IsKeyDown(KEY_D)) moveDir += btVector3(right.x, 0, right.z);
-//         if (IsKeyDown(KEY_A)) moveDir -= btVector3(right.x, 0, right.z);
+        Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
+        Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, { 0, 1, 0 }));
+        forward.y = 0;
+        right.y = 0;
 
-//         if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
-//             playerMoveSpeed = 50;
-//         else
-//             playerMoveSpeed = 20;
+        btVector3 moveDir(0, 0, 0);
 
-//         btVector3 currentVel = UPLAYER->body->getLinearVelocity();
-//         if (moveDir.length2() > 0.0001f)
-//             moveDir = moveDir.normalized() * playerMoveSpeed;
-//         else
-//             moveDir = btVector3(0, 0, 0);
+        if (IsKeyDown(KEY_W)) moveDir += btVector3(forward.x, 0, forward.z);
+        if (IsKeyDown(KEY_S)) moveDir -= btVector3(forward.x, 0, forward.z);
+        if (IsKeyDown(KEY_D)) moveDir += btVector3(right.x, 0, right.z);
+        if (IsKeyDown(KEY_A)) moveDir -= btVector3(right.x, 0, right.z);
 
-//         moveDir.setY(currentVel.getY());
-//         UPLAYER->body->setLinearVelocity(moveDir);
+        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+            playerMoveSpeed = 50;
+        else
+            playerMoveSpeed = 20;
 
-//         if (IsKeyPressed(KEY_SPACE))
-//             UPLAYER->body->applyCentralImpulse(btVector3(0, 5, 0));
-//     }
-// }
+        btVector3 currentVel = user->playerBody->getLinearVelocity();
+        if (moveDir.length2() > 0.0001f)
+            moveDir = moveDir.normalized() * playerMoveSpeed;
+        else
+            moveDir = btVector3(0, 0, 0);
 
-// void Player_Render() {
-//     if (UPLAYER->model.meshCount == 0) {
-//     std::cerr << "Failed to load model: " <<  "\n";
-// }
+        moveDir.setY(currentVel.getY());
+        user->playerBody->setLinearVelocity(moveDir);
 
-//     if (!UPLAYER || !UPLAYER->body || !UPLAYER->body->getMotionState()) return;
+        if (IsKeyPressed(KEY_SPACE))
+            user->playerBody->applyCentralImpulse(btVector3(0, 5, 0));
+    }
+}
 
-//     btTransform trans;
-//     UPLAYER->body->getMotionState()->getWorldTransform(trans);
-//     btVector3 pos = trans.getOrigin();
-//         // DrawModel(model, playerPos, 1.0f, WHITE);
+void Player_Render() {
+ 
 
-//         DrawModel(UPLAYER->model, { pos.getX(), pos.getY(), pos.getZ() }, 5.0f, WHITE); // scale 5.0f
-// DrawCube({ pos.getX(), pos.getY(), pos.getZ() }, 0.5f, 1.9f, 0.5f, GREEN);
+    if (!user || !user->playerBody || !user->playerBody->getMotionState()) return;
 
-//     DrawModel(UPLAYER->model, { pos.getX(), pos.getY(), pos.getZ() }, 1.0f, WHITE);
-//     // Alternatively, use a debug box:
-//     DrawCube({ pos.getX(), pos.getY(), pos.getZ() }, 0.5f, 1.9f, 0.5f, GREEN);
-// }
+    btTransform trans;
+    user->playerBody->getMotionState()->getWorldTransform(trans);
+    btVector3 pos = trans.getOrigin();
+
+    DrawCube({ pos.getX(), pos.getY(), pos.getZ() }, 0.5f, 1.9f, 0.5f, GREEN);
+        DrawModel(user->onlyModel, { pos.getX(), pos.getY(), pos.getZ() }, 5.0f, WHITE); // scale 5.0f
+
+
+    }
+
+
+
+
+MyModel1::MyModel1(btRigidBody* rigidBody, const Model& model)
+    : playerBody(rigidBody), onlyModel(model) {
+            std::cout << "MyModel constructed!" << std::endl;
+    }

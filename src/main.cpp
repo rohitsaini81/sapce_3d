@@ -49,15 +49,16 @@ int main() {
     bool open = false;
     //--->
     const std::string Path = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
-    // const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
+    const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
     // if (plane.meshCount == 0) {
     //     std::cerr << "Failed to load plane model!" << std::endl;
     // }
-    // Model model = LoadModel(modelPath);
+    Model model = LoadModel(modelPath);
     // int animCount = 0;
     // ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
     // float animFrameCounter = 0.0f;
 
+    tempModel1 = LoadModel(modelPath);
 
     /***************************Lua script loading****************************/
     // Lua is here
@@ -156,18 +157,17 @@ int main() {
         // DrawCube({0.0f, 0.0f, 0.0f}, 20.0f, 0.1f, 20.0f, WHITE);
 
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
-        // Player_Update(delta);
-        // Player_Render();
+        Player_Update(delta);
+        Player_Render();
 
-        // DrawModel(UPLAYER->model, playerPos, 1.0f, WHITE);
-        // DrawModel(tempModel,planePos,1.0f,WHITE);
+        DrawModel(model,{0,0,0},1.0f,WHITE);
 
 
+        
+        
+        
         render(delta);
-
-
-
-
+        
         EndMode3D();
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
