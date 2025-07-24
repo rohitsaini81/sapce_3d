@@ -204,11 +204,11 @@ void Person::RayCastPerson(Vector3 origin, Vector3 /*unused*/) {
 
             if (rayCallback.hasHit()) {
                 btCollisionObject* hitObject = const_cast<btCollisionObject*>(rayCallback.m_collisionObject);
-                if (hitObject == playerBody) {
-                    isPlayerAround = 1;
-                    lastSeenPlayerPos = { end.x, end.y, end.z };
-                    return;
-                }
+                // if (hitObject == playerBody) {
+                //     isPlayerAround = 1;
+                //     lastSeenPlayerPos = { end.x, end.y, end.z };
+                //     return;
+                // }
             }
         }
     };

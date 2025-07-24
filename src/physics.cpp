@@ -9,7 +9,6 @@
 #include <lua.h>
 #include "../NPC/person.h"
 #include "../3dObjects/Models.h"
-#include "player.h"
 // Bullet globals
 btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
 btBroadphaseInterface* broadphase = nullptr;
@@ -30,7 +29,7 @@ btRigidBody* boxBody = nullptr;
 
 
 
-Person* PersonA =nullptr;
+// Person* PersonA =nullptr;
 void InitPhysics() {
     // Bullet physics world setup
     broadphase = new btDbvtBroadphase();
@@ -64,10 +63,9 @@ void InitPhysics() {
 //     CREATE_ELEM();
 
 // }
-PersonA = new Person({getPlayerX(),getPlayerY(),getPlayerY()},PersonType::ENEMY);
+// PersonA = new Person({getPlayerX(),getPlayerY(),getPlayerY()},PersonType::ENEMY);
 
-dynamicsWorld->addRigidBody(PersonA->body);
-Player_Init(dynamicsWorld);
+// dynamicsWorld->addRigidBody(PersonA->body);
 // rigidBodies.push_back(PersonA->body);
 
 
@@ -130,22 +128,22 @@ void testRayCast(Vector3 from, Vector3 to)
         std::cout << "No hit detected.\n";
     }
 
-    if (rayCallback.hasHit()) {
-        btCollisionObject* hitObject = const_cast<btCollisionObject*>(rayCallback.m_collisionObject);
+    // if (rayCallback.hasHit()) {
+    //     btCollisionObject* hitObject = const_cast<btCollisionObject*>(rayCallback.m_collisionObject);
     
-        // Example: check if it's your box
-        if (hitObject == boxBody) {
-            std::cout << "Hit the box!\n";
-        } else if (hitObject == playerBody) {
-            std::cout << "Hit the player (yourself).\n";
-        } else if (hitObject == PersonA->body) {
-            std::cout << "Hit PersonA.\n";
-        } else if (hitObject == groundBody) {
-            std::cout << "Hit Ground surface.\n";
-        }else {
-            std::cout << "Hit unknown object.\n";
-        }
-    }
+    //     // Example: check if it's your box
+    //     if (hitObject == boxBody) {
+    //         std::cout << "Hit the box!\n";
+    //     } else if (hitObject == playerBody) {
+    //         std::cout << "Hit the player (yourself).\n";
+    //     } else if (hitObject == PersonA->body) {
+    //         std::cout << "Hit PersonA.\n";
+    //     } else if (hitObject == groundBody) {
+    //         std::cout << "Hit Ground surface.\n";
+    //     }else {
+    //         std::cout << "Hit unknown object.\n";
+    //     }
+    // }
     
 
 
@@ -164,10 +162,8 @@ void testRayCast(Vector3 from, Vector3 to)
     }
 
 
-    PersonA->Update(deltaTime);
-    PersonA->Render();
-    Player_Update(deltaTime);
-Player_Render();
+    // PersonA->Update(deltaTime);
+    // PersonA->Render();
 
 
 
@@ -226,76 +222,4 @@ if (elementList[i] && elementList[i]->model) {
 
 
 
-if(playerBody && playerBody->getMotionState()){
-btTransform trans;
-playerBody->getMotionState()->getWorldTransform(trans);
-
-
-// Use modelPosition when drawing
-btVector3 bulletPos = trans.getOrigin();setPlayerY(bulletPos.getY());setPlayerX(bulletPos.getX());setPlayerZ(bulletPos.getZ());
-   // std::cout << "rendering physics: " << bulletPos.getX() << std::endl;
-
-    float capsuleVisualHeight = 1.5f + 2 * 0.2f; // total 1.9
-    float halfHeight = capsuleVisualHeight / 1.0f;
-
-    
-    Vector3 cameraDir = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
-    Vector3 startPos = { bulletPos.getX(), bulletPos.getY(), bulletPos.getZ() };
-    
-    // Cast ray 10 units in front of camera
-    Vector3 endPos = {
-        startPos.x + cameraDir.x * 50.0f,
-        startPos.y + cameraDir.y * 50.0f,
-        startPos.z + cameraDir.z * 50.0f
-    };
-
-    
-    // testRayCast(startPos, endPos);
-    
-}
-//this if should be moved to previews one
-//movement and jump controls
-if(playerBody && playerBody->getLinearVelocity()){
-
-btVector3 vel(0, playerBody->getLinearVelocity().getY(), 0); // keep current vertical velocity (gravity)
-if (IsKeyDown(KEY_UP)) std::cout<<"is it fine ? \n";
-
-
-// Get camera forward and right direction (only XZ for movement)
-Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
-Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, { 0, 1, 0 }));
-
-// Flatten to XZ plane
-forward.y = 0;
-right.y = 0;
-
-// Movement vector
-btVector3 moveDir(0, 0, 0);
-
-if (IsKeyDown(KEY_W)) moveDir += btVector3(forward.x, 0, forward.z);
-if (IsKeyDown(KEY_S)) moveDir -= btVector3(forward.x, 0, forward.z);
-if (IsKeyDown(KEY_D)) moveDir += btVector3(right.x, 0, right.z);
-if (IsKeyDown(KEY_A)) moveDir -= btVector3(right.x, 0, right.z);
-if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)){playerMoveSpeed =50;}else{playerMoveSpeed=10;};
-
-
-
-// Keep vertical velocity
-btVector3 currentVel = playerBody->getLinearVelocity();
-if (moveDir.length2() > 0.0001f) {
-    moveDir = moveDir.normalized() * playerMoveSpeed;
-} else {
-    moveDir = btVector3(0, 0, 0);
-}
-
-
-// speed
-moveDir.setY(currentVel.getY());
-
-playerBody->setLinearVelocity(moveDir);
-
-if (IsKeyPressed(KEY_SPACE)) {playerBody->applyCentralImpulse(btVector3(0, 5, 0));}}
-
-
-}
-
+    }

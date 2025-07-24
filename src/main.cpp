@@ -21,14 +21,17 @@ extern "C" {
 #include "script/script.h"
 #include <filesystem>
 
+#include "player.h"
 
-#include "imgui.h"
-#include "rlImGui.h"
+// #include "imgui.h"
+// #include "rlImGui.h"
 
 void LoadResources(std::atomic<bool>& loadingDone) {
     INIT_BEFORE();
     InitPhysics();
     CAM_INIT();
+    Player_Init(dynamicsWorld);
+
 
     loadingDone = true;
 }
@@ -43,24 +46,17 @@ int main() {
     std::thread loadingThread(LoadResources, std::ref(loadingDone));
     int dotCounter = 0;
     float timer = 0.0f;
-    rlImGuiSetup(true);
-
     bool open = false;
-    ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->AddFontDefault();
-
-
     //--->
     const std::string Path = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
-    const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/"
-                            "assets/rick/rick.glb";
+    // const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
     // if (plane.meshCount == 0) {
     //     std::cerr << "Failed to load plane model!" << std::endl;
     // }
-    Model model = LoadModel(modelPath);
-    int animCount = 0;
-    ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
-    float animFrameCounter = 0.0f;
+    // Model model = LoadModel(modelPath);
+    // int animCount = 0;
+    // ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
+    // float animFrameCounter = 0.0f;
 
 
     /***************************Lua script loading****************************/
@@ -128,17 +124,15 @@ int main() {
 
         // Handle animation
         //--->
-        if (animCount > 0) {
-            animFrameCounter += 1.0f;
-            if (animFrameCounter >= anims[0].frameCount) animFrameCounter = 0;
-            UpdateModelAnimation(model, anims[0], (int)animFrameCounter);
-        }
+        // if (animCount > 0) {
+        //     animFrameCounter += 1.0f;
+        //     if (animFrameCounter >= anims[0].frameCount) animFrameCounter = 0;
+        //     UpdateModelAnimation(model, anims[0], (int)animFrameCounter);
+        // }
 
-        // Skip camera updates when interacting with ImGui
-        if (!ImGui::GetIO().WantCaptureMouse) {
-            // Process camera/mouse here
+ 
             UPDATE_CAMERA();
-        }
+        
 
 
         if (IsKeyPressed(KEY_X)) {
@@ -159,75 +153,31 @@ int main() {
         // ClearBackground(RAYWHITE);
         BeginMode3D(camera);
 
-        DrawCube({0.0f, 0.0f, 0.0f}, 20.0f, 0.1f, 20.0f, WHITE);
+        // DrawCube({0.0f, 0.0f, 0.0f}, 20.0f, 0.1f, 20.0f, WHITE);
 
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
+        // Player_Update(delta);
+        // Player_Render();
 
-
-        DrawModel(model, playerPos, 1.0f, WHITE);
+        // DrawModel(UPLAYER->model, playerPos, 1.0f, WHITE);
         // DrawModel(tempModel,planePos,1.0f,WHITE);
 
 
         render(delta);
 
 
-        playerPos.x = getPlayerX();
-        playerPos.y = (getPlayerY() - 1.0f);
-        playerPos.z = getPlayerZ();
 
-
-        // DrawModelEx(plane, planePos, {1.0f, 0.0f, 0.0f}, -90.0f, {1.0f, 1.0f, 1.0f}, WHITE);
-        // DrawGrid(10, 1.0f);
 
         EndMode3D();
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
-
-
-        rlImGuiBegin();
-        ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
-        // ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
-
-        if (open) {
-            if (ImGui::Begin("Menu Window", &open, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
-                ImGui::TextUnformatted(ICON_FA_JEDI);
-                if (ImGui::Button("Click Me")) {
-                    std::cout << "Button clicked!" << std::endl;
-                }
-                ImGui::SameLine();
-                ImGui::Text("Camera Target: X %.2f Y %.2f", camera.target.x, camera.target.y);
-                bool show_demo_window = true;
-                static float f = 0.0f;
-                static int counter = 0;
-                ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
-                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-                ImGui::BeginChild("ScrollRegion", ImVec2(0, 0), true);
-
-                if (ImGui::Button(
-                        "Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                    counter++;
-                ImGui::SameLine();
-                ImGui::Text("counter = %d", counter);
-                for (int i = 0; i < 50; i++) {
-                    ImGui::Text("Move Tool %d", i);
-                }
-                ImGui::EndChild();
-
-                ImGui::End();
-            }
-        }
-        rlImGuiEnd();
-
-
         EndDrawing();
     }
 
 
     // Cleanup
     //--->
-    if (animCount > 0) UnloadModelAnimations(anims, animCount);
-    UnloadModel(model);
-    UnloadModel(plane);
+    // if (animCount > 0) UnloadModelAnimations(anims, animCount);
     CleanupPhysics();
     CloseWindow();
 

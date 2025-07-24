@@ -3,30 +3,31 @@
 
 #include "raylib.h"
 #include <bullet/btBulletDynamicsCommon.h>
+#include <memory>
 
-// Player physics components
-extern btCollisionShape* playerShape;
-extern btTransform startTransform;
-extern btDefaultMotionState* motionState;
-extern btRigidBody* playerBody;
+struct PLAYER {
+    Model model;
 
-// Position tracking
-extern float playerX;
-extern float playerY;
-extern float playerZ;
+    btRigidBody* body = nullptr;
+    btCollisionShape* shape = nullptr;
+    btTransform transform;
+    btDefaultMotionState* motionState = nullptr;
+    btVector3 inertia;
 
-// External access to player position
-float getPlayerX();
-float getPlayerY();
-float getPlayerZ();
+    float x = 0.0f, y = 0.0f, z = 0.0f;
 
-void setPlayerX(float X);
-void setPlayerY(float Y);
-void setPlayerZ(float Z);
+    // Direct loading constructor
+    PLAYER(const char* modelPath)
+        : model(LoadModel(modelPath)), inertia(0, 0, 0) {}
 
-// Initialization and update
+
+
+
+};
+
+
 void Player_Init(btDiscreteDynamicsWorld* world);
 void Player_Update(float deltaTime);
 void Player_Render();
 
-#endif
+#endif // PLAYER_H
