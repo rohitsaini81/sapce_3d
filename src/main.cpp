@@ -1,4 +1,5 @@
 #include "physics.h"
+#include "player.h"
 #include "raylib.h"
 #include "raymath.h"
 #include <iostream>
@@ -25,14 +26,6 @@ extern "C" {
 
 
 
-
-
-
-
-#include "rlImGui.h"	
-#include "imgui.h"
-
-
 int main() {
 
     const std::string scriptPath = project_dir+"src/script/config.lua";
@@ -47,9 +40,6 @@ int main() {
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
-    rlImGuiSetup(true); 
-    ImGuiIO& io = ImGui::GetIO();
-io.Fonts->AddFontDefault();
 
     INIT_BEFORE();
     InitPhysics();
@@ -179,11 +169,9 @@ lights[0] = CreateLight(
 
 
 
-// Skip camera updates when interacting with ImGui
-if (!ImGui::GetIO().WantCaptureMouse) {
-    // Process camera/mouse here
+
     UPDATE_CAMERA();
-}
+
 
 
 
@@ -205,7 +193,8 @@ if (!ImGui::GetIO().WantCaptureMouse) {
 
       render(delta);
 
-
+      Player_Update(delta);
+    //   Player_Render();
 
         EndShaderMode();
 
@@ -248,40 +237,7 @@ bool open=true;
 
 
 
-
-        rlImGuiBegin();
-ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
-// ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
-if (ImGui::Begin("Test Window", &open, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
-    ImGui::TextUnformatted(ICON_FA_JEDI);
-        if (ImGui::Button("Click Me")) {
-        std::cout << "Button clicked!" << std::endl;
-    }
-    ImGui::SameLine();
-    ImGui::Text("Camera Target: X %.2f Y %.2f", camera.target.x, camera.target.y);
-  bool show_demo_window = true;
-    static float f = 0.0f;
-                static int counter = 0;
-                ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);  
-    ImGui::BeginChild("ScrollRegion", ImVec2(0, 0), true);
-
-               if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-    for (int i = 0; i < 50; i++) {
-        ImGui::Text("Move Tool %d", i);
-    }
-    ImGui::EndChild();
-
-    ImGui::End();
-}
-
-rlImGuiEnd();
-
-
-        EndDrawing();
+EndDrawing();
 
 
 
