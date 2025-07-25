@@ -43,6 +43,7 @@ int main() {
 
     INIT_BEFORE();
     InitPhysics();
+    Player_Init(dynamicsWorld);
         //--->
 const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
 const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
@@ -187,14 +188,14 @@ lights[0] = CreateLight(
         DrawPlane(Vector3Zero(), (Vector2) { 10.0, 10.0 }, WHITE);
 
 
-        DrawModel(model, playerPos, 1.0f, WHITE);
+        // DrawModel(model, playerPos, 1.0f, WHITE);
         // DrawModel(tempModel,planePos,1.0f,WHITE);
 
 
-      render(delta);
+    //   render(delta);
 
       Player_Update(delta);
-    //   Player_Render();
+      Player_Render();
 
         EndShaderMode();
 
