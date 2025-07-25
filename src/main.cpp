@@ -141,6 +141,7 @@ lights[0] = CreateLight(
         }
 
         float delta = GetFrameTime();
+        UpdatePhysics(delta);
         // Update the shader with the camera view vector (points towards { 0.0f, 0.0f, 0.0f })
         float cameraPos[3] = { camera.position.x, camera.position.y, camera.position.z };
         SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
@@ -165,8 +166,8 @@ lights[0] = CreateLight(
 
         // Update camera to follow player from behind and above
         Vector3 cameraOffset = {-5.0f, 4.0f, 5.0f}; // Offset behind and above
-        camera.position = Vector3Add(playerPos, cameraOffset);
-        camera.target = playerPos;
+        camera.position = Vector3Add(PlayerModel::GetPosition(), cameraOffset);
+        camera.target = PlayerModel::GetPosition();
 
 
 
@@ -217,9 +218,7 @@ lights[0] = CreateLight(
         
 
 
-        playerPos.x=getPlayerX();
-        playerPos.y=(getPlayerY()-1.0f);
-        playerPos.z=getPlayerZ();
+        playerPos = PlayerModel::GetPosition();
 
 
 

@@ -91,7 +91,7 @@ playerBody = new btRigidBody(rbInfo);
 playerBody->setAngularFactor(btVector3(0, 1, 0));  // allow rotation only on Y-axi
 playerBody->setActivationState(DISABLE_DEACTIVATION);
 // Add to physics world
-dynamicsWorld->addRigidBody(playerBody);
+// dynamicsWorld->addRigidBody(playerBody);
 
 
 // for(int i =0;i<5;i++){

@@ -11,7 +11,7 @@ struct PlayerModel {
     // btTransform startTransform;
     // btDefaultMotionState* motionState;
     Model onlyModel;
-
+    static Vector3 GetPosition();
     PlayerModel(btRigidBody* rigidBody, const Model& model);  // constructor declared
 };
 

@@ -3,13 +3,28 @@
 #include "global_var.h"
 #include "raymath.h"
 #include "raylib.h"
+#include <bullet/LinearMath/btVector3.h>
 #include <iostream>
 
 
 PlayerModel::PlayerModel(btRigidBody* rigidBody, const Model& model)
     : rigibBodyofModel(rigidBody), onlyModel(model) {
             std::cout << "PlayerModel constructed!" << std::endl;
+
     }
+#include "raymath.h" // for Vector3 and related functions
+
+Vector3 PlayerModel::GetPosition() {
+    if (!User || !User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) {
+        return {0, 0, 0}; // safe fallback
+    }
+
+    btTransform trans;
+    User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
+    btVector3 pos = trans.getOrigin();
+    return Vector3{pos.getX(), pos.getY(), pos.getZ()};  // ✅ correct conversion
+}
+
 PlayerModel* User;
 
 void Player_Init(btDiscreteDynamicsWorld* world) {
@@ -44,16 +59,16 @@ User = new PlayerModel(playerBody, umodel);
 }
 
 void Player_Update(float deltaTime) {
-    if (!User || !User->rigibBodyofModel) return;
+    // if (!User || !User->rigibBodyofModel) return;
  
-    if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
-
+    // if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
     btVector3 pos = trans.getOrigin();
 
 
     if (User->rigibBodyofModel->getLinearVelocity()) {
+
         btVector3 vel(0, User->rigibBodyofModel->getLinearVelocity().getY(), 0);
 
         Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
@@ -62,35 +77,36 @@ void Player_Update(float deltaTime) {
         right.y = 0;
 
         btVector3 moveDir(0, 0, 0);
+std::cout<<"player update\n";
 
-        if (IsKeyDown(KEY_W)) moveDir += btVector3(forward.x, 0, forward.z);
-        if (IsKeyDown(KEY_S)) moveDir -= btVector3(forward.x, 0, forward.z);
-        if (IsKeyDown(KEY_D)) moveDir += btVector3(right.x, 0, right.z);
-        if (IsKeyDown(KEY_A)) moveDir -= btVector3(right.x, 0, right.z);
+        if (IsKeyDown(KEY_W)) {moveDir += btVector3(forward.x, 0, forward.z);}
+        if (IsKeyDown(KEY_S)) {moveDir -= btVector3(forward.x, 0, forward.z);}
+        if (IsKeyDown(KEY_D)) {moveDir += btVector3(right.x, 0, right.z);}
+        if (IsKeyDown(KEY_A)){ moveDir -= btVector3(right.x, 0, right.z);}
 
-        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)){
             playerMoveSpeed = 50;
-        else
-            playerMoveSpeed = 10;
+        }else{
+            playerMoveSpeed = 10;}
 
         btVector3 currentVel = User->rigibBodyofModel->getLinearVelocity();
-        if (moveDir.length2() > 0.0001f)
+        if (moveDir.length2() > 0.0001f){
             moveDir = moveDir.normalized() * playerMoveSpeed;
-        else
-            moveDir = btVector3(0, 0, 0);
+        }else{
+            moveDir = btVector3(0, 0, 0);}
 
         moveDir.setY(currentVel.getY());
         User->rigibBodyofModel->setLinearVelocity(moveDir);
 
-        if (IsKeyPressed(KEY_SPACE)) User->rigibBodyofModel->applyCentralImpulse(btVector3(0, 5, 0));
+        if (IsKeyPressed(KEY_SPACE)){ User->rigibBodyofModel->applyCentralImpulse(btVector3(0, 5, 0));}
     }
 }
 
 void Player_Render() {
-if (!User || !User->rigibBodyofModel) return;
+if (!User || !User->rigibBodyofModel){ return;}
 
 
-    if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
+    if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) {return;}
 
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
