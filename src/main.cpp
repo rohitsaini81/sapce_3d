@@ -26,9 +26,9 @@ extern "C" {
 
 
 void LoadResources(std::atomic<bool>& loadingDone) {
-    INIT_BEFORE();
-    InitPhysics();
-    CAM_INIT();
+    // INIT_BEFORE();
+    // InitPhysics();
+    // CAM_INIT();
     // Player_Init(dynamicsWorld);
 
 
@@ -50,7 +50,9 @@ int main() {
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
-
+    INIT_BEFORE();
+    InitPhysics();
+    CAM_INIT();
         //--->
 const std::string scriptPath = project_dir+"src/script/config.lua";
 const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
