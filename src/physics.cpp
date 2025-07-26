@@ -42,6 +42,7 @@ float playerZ = 0.0f;
 Person* PersonA =nullptr;
 void InitPhysics() {
     // Bullet physics world setup
+    
     broadphase = new btDbvtBroadphase();
     collisionConfiguration = new btDefaultCollisionConfiguration();
     dispatcher = new btCollisionDispatcher(collisionConfiguration);
@@ -91,18 +92,19 @@ playerBody = new btRigidBody(rbInfo);
 playerBody->setAngularFactor(btVector3(0, 1, 0));  // allow rotation only on Y-axi
 playerBody->setActivationState(DISABLE_DEACTIVATION);
 // Add to physics world
-// dynamicsWorld->addRigidBody(playerBody);
+dynamicsWorld->addRigidBody(playerBody);
 
 
-// for(int i =0;i<5;i++){
-//     CREATE_ELEM();
+for(int i =0;i<5;i++){
+    CREATE_ELEM();
 
-// }
+}
 PersonA = new Person({getPlayerX(),getPlayerY(),getPlayerY()},PersonType::ENEMY);
 
 dynamicsWorld->addRigidBody(PersonA->body);
 // rigidBodies.push_back(PersonA->body);
 
+Init_Elems();
 
 
 
@@ -192,10 +194,6 @@ void testRayCast(Vector3 from, Vector3 to)
 
 
     void render(float deltaTime) {
-    if (dynamicsWorld) {
-        dynamicsWorld->stepSimulation(1.0f / 60.0f, 10);
-    }
-
 
     PersonA->Update(deltaTime);
     PersonA->Render();

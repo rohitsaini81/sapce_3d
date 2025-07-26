@@ -77,7 +77,7 @@ void Player_Update(float deltaTime) {
         right.y = 0;
 
         btVector3 moveDir(0, 0, 0);
-std::cout<<"player update\n";
+// std::cout<<"player update\n";
 
         if (IsKeyDown(KEY_W)) {moveDir += btVector3(forward.x, 0, forward.z);}
         if (IsKeyDown(KEY_S)) {moveDir -= btVector3(forward.x, 0, forward.z);}
@@ -111,6 +111,19 @@ if (!User || !User->rigibBodyofModel){ return;}
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
     btVector3 pos = trans.getOrigin();
-
+    Vector3 position = { pos.getX(), pos.getY(), pos.getZ() };
     DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 0.5f, 1.9f, 0.5f, GREEN);
+
+
+    DrawModelEx(User->onlyModel,
+            position,
+            {0.0f, 1.0f, 0.0f}, // Y-axis
+            180.0f,             // Rotate 180 degrees
+            {1.0f, 1.0f, 1.0f}, // Scale
+            WHITE);
+
+    DrawModel(User->onlyModel,position , 10.0f, WHITE);
+// std::cout << "Mesh count: " << User->onlyModel.meshCount << "\n";
+
+
 }

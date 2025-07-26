@@ -29,7 +29,7 @@ void LoadResources(std::atomic<bool>& loadingDone) {
     INIT_BEFORE();
     InitPhysics();
     CAM_INIT();
-    Player_Init(dynamicsWorld);
+    // Player_Init(dynamicsWorld);
 
 
     loadingDone = true;
@@ -50,7 +50,6 @@ int main() {
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
-
 
         //--->
 const std::string scriptPath = project_dir+"src/script/config.lua";
@@ -174,14 +173,13 @@ const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/A
         DrawPlane(Vector3Zero(), (Vector2) { 10.0, 10.0 }, WHITE);
 
 
-        // DrawModel(model, playerPos, 1.0f, WHITE);
-        // DrawModel(tempModel,planePos,1.0f,WHITE);
+        DrawModel(model, playerPos, 1.0f, WHITE);
 
 
-    //   render(delta);
+      render(delta);
 
-      Player_Update(delta);
-      Player_Render();
+    //   Player_Update(delta);
+    //   Player_Render();
 
 
 
