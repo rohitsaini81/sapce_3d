@@ -7,7 +7,10 @@
 #include "global_var.h"
 #include "camera.h"
 #include "objects.h"
-
+#include "raylib.h"
+#include <atomic>
+#include <chrono>
+#include <thread>
 
 extern "C" {
   #include "lua.h"
@@ -19,16 +22,23 @@ extern "C" {
 
 
 
-#define RLIGHTS_IMPLEMENTATION
-#include "rlights.h"
-#define GLSL_VERSION            330
 
+
+
+void LoadResources(std::atomic<bool>& loadingDone) {
+    INIT_BEFORE();
+    InitPhysics();
+    CAM_INIT();
+    Player_Init(dynamicsWorld);
+
+
+    loadingDone = true;
+}
 
 
 
 int main() {
 
-    const std::string scriptPath = project_dir+"src/script/config.lua";
 
 
 
@@ -41,76 +51,29 @@ int main() {
     SetConfigFlags(FLAG_MSAA_4X_HINT);  // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(800, 600, "Rick and Morty Baby");
 
-    INIT_BEFORE();
-    InitPhysics();
-    Player_Init(dynamicsWorld);
+
         //--->
+const std::string scriptPath = project_dir+"src/script/config.lua";
 const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
 const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
     Model model = LoadModel(modelPath);
-    Model tempModel = LoadModel((project_dir+"src/assets/american_road_intersection.glb").c_str());
-    Model plane = LoadModel((project_dir+"src/assets/cube.glb").c_str());
-    if (plane.meshCount == 0) {std::cerr << "Failed to load plane model!" << std::endl;}
-
+ 
     int animCount = 0;
     ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
     float animFrameCounter = 0.0f;
 
 
-    CAM_INIT();
     // Player state
     Vector3 planePos = {2.0f, 0.0f, 2.0f};
-    float velocityY = 0.0f;
-    float gravity = 0.1f;
-    float speed = 5.0f;
+
 
     SetTargetFPS(60);
     SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
-
-    const std::string vshader = project_dir+"src/shaders/phong.vs";
-    const std::string fshader = project_dir+"src/shaders/phong.fs";
-
-
-    Shader shader = LoadShader(TextFormat(vshader.c_str(), GLSL_VERSION),
-    TextFormat(fshader.c_str(), GLSL_VERSION));
-// Get some required shader locations
-shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
-// NOTE: "matModel" location name is automatically assigned on shader loading, 
-// no need to get the location again if using that uniform name
-//shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
-
-// Ambient light level (some basic lighting)
-int ambientLoc = GetShaderLocation(shader, "ambient");
-// SetShaderValue(shader, ambientLoc, (float[4]){ 0.1f, 0.1f, 0.1f, 1.0f }, SHADER_UNIFORM_VEC4);
-SetShaderValue(shader, ambientLoc, (float[4]){ 0.3f, 0.3f, 0.3f, 1.0f }, SHADER_UNIFORM_VEC4);
-
-
-
-    // Create lights
-    Light lights[MAX_LIGHTS] = { 0 };
-    Color sunLightColor = (Color){ 255, 244, 214, 255 };  // More realistic sunlight
-lights[0] = CreateLight(
-    LIGHT_DIRECTIONAL,
-    (Vector3){ 0, 100, 0 },      // Position (for optional visual debugging)
-    (Vector3){ 0, -1, 0 },      // Direction: Downward like sunlight
-    Vector3Zero(),             // Target (not used for directional light)
-    sunLightColor,                    // Light color
-    shader
-);
-
-// After (Directional Sun Light)
-// lights[0] = CreateLight(LIGHT_DIRECTIONAL,
-//     (Vector3){ 0, 10, 0 },     // Position (not used for lighting, just for optional visualization)
-//     (Vector3){ 0, -1, 0 },     // Direction: straight down like sunlight
-//     YELLOW,
-//     shader);
-
-    for (int i = 0; i < model.materialCount; i++) {
-        model.materials[i].shader = shader;
-    }
-    
-
-
+    std::atomic<bool> loadingDone = false;
+    std::thread loadingThread(LoadResources, std::ref(loadingDone));
+    int dotCounter = 0;
+    float timer = 0.0f;
+    bool open = false;
 
 
     // Lua is here 
@@ -128,6 +91,39 @@ lights[0] = CreateLight(
 
     // end lua here
 
+
+
+
+ while (!WindowShouldClose()) {
+        if (!loadingDone) {
+            // Animate the dots (e.g. "Loading.", "Loading..", "Loading...")
+            timer += GetFrameTime();
+            if (timer >= 0.5f) {
+                dotCounter = (dotCounter + 1) % 4; // Cycle through 0 to 3
+                timer = 0.0f;
+            }
+
+            BeginDrawing();
+            ClearBackground(RAYWHITE);
+
+            std::string loadingText = "Loading";
+            for (int i = 0; i < dotCounter; ++i) loadingText += ".";
+
+            DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+
+            EndDrawing();
+        }
+        else {
+            // Done loading, break and show your actual scene
+            break;
+        }
+    }
+    if (loadingThread.joinable()) loadingThread.join();
+
+
+
+
+
     while (!WindowShouldClose()) {
 
         time_t currentModified = getFileLastModifiedTime(scriptPath);
@@ -142,18 +138,8 @@ lights[0] = CreateLight(
 
         float delta = GetFrameTime();
         UpdatePhysics(delta);
-        // Update the shader with the camera view vector (points towards { 0.0f, 0.0f, 0.0f })
-        float cameraPos[3] = { camera.position.x, camera.position.y, camera.position.z };
-        SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
-        
+ 
     
-           // Update light values (actually, only enable/disable them)
-           for (int i = 0; i < MAX_LIGHTS; i++) UpdateLightValues(shader, lights[i]);
-           //----------------------------------------------------------------------------------
-   
-           // Draw
-           //--------
-
 
         // Handle animation
         //--->
@@ -183,7 +169,6 @@ lights[0] = CreateLight(
         ClearBackground(BLACK);
         // ClearBackground(RAYWHITE);
         BeginMode3D(camera);
-        BeginShaderMode(shader);
         DrawCube({ 0.0f, 0.0f, 0.0f }, 20.0f, 0.1f, 20.0f, WHITE);
         
         DrawPlane(Vector3Zero(), (Vector2) { 10.0, 10.0 }, WHITE);
@@ -198,23 +183,9 @@ lights[0] = CreateLight(
       Player_Update(delta);
       Player_Render();
 
-        EndShaderMode();
 
 
 
-        for (int i = 0; i < MAX_LIGHTS; i++) {
-            if (lights[i].type == LIGHT_POINT) {
-                if (lights[i].enabled)
-                    DrawSphereEx(lights[i].position, 0.2f, 8, 8, lights[i].color);
-                else
-                    DrawSphereWires(lights[i].position, 0.2f, 8, 8, ColorAlpha(lights[i].color, 0.3f));
-            } else if (lights[i].type == LIGHT_DIRECTIONAL) {
-                // Visualize directional light with a line (like sunlight)
-                Vector3 endPoint = Vector3Add(lights[i].position, Vector3Scale(lights[i].direction, 2.0f));
-                DrawLine3D(lights[i].position, endPoint, lights[i].color);
-            }
-        }
-        
         
 
 
@@ -259,9 +230,8 @@ EndDrawing();
         //--->
     if (animCount > 0) UnloadModelAnimations(anims, animCount);
     UnloadModel(model);
-    UnloadModel(plane);
+    // UnloadModel(plane);
     CleanupPhysics();
-    UnloadShader(shader);   // Unload shader
     CloseWindow();
 
     return 0;
