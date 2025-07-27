@@ -27,10 +27,10 @@ extern "C" {
 // #include "rlImGui.h"
 
 void LoadResources(std::atomic<bool>& loadingDone) {
-    INIT_BEFORE();
-    InitPhysics();
-    CAM_INIT();
-    Player_Init(dynamicsWorld);
+    // INIT_BEFORE();
+    // InitPhysics();
+    // CAM_INIT();
+    // Player_Init(dynamicsWorld);
 
 
     loadingDone = true;
@@ -41,6 +41,11 @@ int main() {
     InitWindow(1080, 700, "Rick and Morty Baby");
     SetTargetFPS(60);
     SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
+   INIT_BEFORE();
+    InitPhysics();
+    CAM_INIT();
+    Player_Init(dynamicsWorld);
+
 
     std::atomic<bool> loadingDone = false;
     std::thread loadingThread(LoadResources, std::ref(loadingDone));
@@ -58,7 +63,6 @@ int main() {
     // ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
     // float animFrameCounter = 0.0f;
 
-    tempModel1 = LoadModel(modelPath);
 
     /***************************Lua script loading****************************/
     // Lua is here
@@ -160,7 +164,7 @@ int main() {
         Player_Update(delta);
         Player_Render();
 
-        DrawModel(model,{0,0,0},1.0f,WHITE);
+        // DrawModel(model,{0,0,0},1.0f,WHITE);
 
 
         

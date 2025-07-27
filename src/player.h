@@ -3,22 +3,23 @@
 
 #include "raylib.h"
 #include <bullet/btBulletDynamicsCommon.h>
-#include <cstddef>
-#include <memory>
 
 
-
-struct MyModel1 {
-    btRigidBody* playerBody = nullptr;
+struct PlayerModel {
+    btRigidBody* rigibBodyofModel;
+    // btCollisionShape* playerShape;
+    // btTransform startTransform;
+    // btDefaultMotionState* motionState;
     Model onlyModel;
-
-
-    MyModel1(btRigidBody* rigidBody, const Model& model);  // constructor declared
+    static Vector3 GetPosition();
+    PlayerModel(btRigidBody* rigidBody, const Model& model);  // constructor declared
 };
-extern MyModel1* user;
-extern Model tempModel1;
+
+// Initialization and update
 void Player_Init(btDiscreteDynamicsWorld* world);
 void Player_Update(float deltaTime);
 void Player_Render();
 
-#endif // PLAYER_H
+extern PlayerModel* User;
+
+#endif
