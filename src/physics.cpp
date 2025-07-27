@@ -104,7 +104,7 @@ PersonA = new Person({getPlayerX(),getPlayerY(),getPlayerY()},PersonType::ENEMY)
 dynamicsWorld->addRigidBody(PersonA->body);
 // rigidBodies.push_back(PersonA->body);
 
-Init_Elems();
+// Init_Elems();
 
 
 

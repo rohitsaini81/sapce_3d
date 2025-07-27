@@ -59,9 +59,9 @@ User = new PlayerModel(playerBody, umodel);
 }
 
 void Player_Update(float deltaTime) {
-    // if (!User || !User->rigibBodyofModel) return;
+    if (!User || !User->rigibBodyofModel) return;
  
-    // if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
+    if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
     btVector3 pos = trans.getOrigin();
@@ -112,17 +112,11 @@ if (!User || !User->rigibBodyofModel){ return;}
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
     btVector3 pos = trans.getOrigin();
     Vector3 position = { pos.getX(), pos.getY(), pos.getZ() };
-    DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 0.5f, 1.9f, 0.5f, GREEN);
+    // DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 0.5f, 1.9f, 0.5f, GREEN);
 
 
-    DrawModelEx(User->onlyModel,
-            position,
-            {0.0f, 1.0f, 0.0f}, // Y-axis
-            180.0f,             // Rotate 180 degrees
-            {1.0f, 1.0f, 1.0f}, // Scale
-            WHITE);
 
-    DrawModel(User->onlyModel,position , 10.0f, WHITE);
+    DrawModel(User->onlyModel,position , 1.0f, WHITE);
 // std::cout << "Mesh count: " << User->onlyModel.meshCount << "\n";
 
 
