@@ -3,6 +3,7 @@
 #include "raymath.h"
 #include "../ETC/global_var.h"
 #include "iostream"
+#include "player.h"
 Camera camera = {0};
 float pitch = 15.0f;  // Slightly looking down
 float cameraDistance = 10.0f;
@@ -38,9 +39,13 @@ cameraOffset.x = cameraDistance * cosf(DEG2RAD * pitch) * sinf(DEG2RAD * yaw);
 cameraOffset.y = cameraDistance * sinf(DEG2RAD * pitch);
 cameraOffset.z = cameraDistance * cosf(DEG2RAD * pitch) * cosf(DEG2RAD * yaw);
 
-// Update camera
-camera.position = Vector3Add(playerPos, cameraOffset);
-camera.target = playerPos;
+
+
+// Update camera to follow player from behind and above
+        // Vector3 cameraOffset = {-5.0f, 4.0f, 5.0f}; // Offset behind and above
+        camera.position = Vector3Add(PlayerModel::GetPosition(), cameraOffset);
+        camera.target = PlayerModel::GetPosition();
+
 camera.up = { 0.0f, 1.0f, 0.0f };
 SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
 

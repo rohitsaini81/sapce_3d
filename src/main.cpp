@@ -33,7 +33,6 @@ void LoadResources(std::atomic<bool>& loadingDone) {
     // Player_Init(dynamicsWorld);
 
 
-    loadingDone = true;
 }
 int main() {
     // Initialization
@@ -41,17 +40,33 @@ int main() {
     InitWindow(1080, 700, "Rick and Morty Baby");
     SetTargetFPS(60);
     SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
+
+
+
+        std::atomic<bool> loadingDone = false;
+    std::thread loadingThread(LoadResources, std::ref(loadingDone));
+    int dotCounter = 0;
+    float timer = 0.0f;
+    bool open = false;
+    BeginDrawing();
+            ClearBackground(RAYWHITE);
+
+            std::string loadingText = "Loading";
+            for (int i = 0; i < dotCounter; ++i) loadingText += ".";
+
+            DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+
+            EndDrawing();
+
+
+
    INIT_BEFORE();
     InitPhysics();
     CAM_INIT();
     Player_Init(dynamicsWorld);
 
 
-    std::atomic<bool> loadingDone = false;
-    std::thread loadingThread(LoadResources, std::ref(loadingDone));
-    int dotCounter = 0;
-    float timer = 0.0f;
-    bool open = false;
+
     //--->
     const std::string Path = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
     const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
@@ -79,7 +94,7 @@ int main() {
     /*********************************************************************/
 
 
-
+/*
     while (!WindowShouldClose()) {
         if (!loadingDone) {
             // Animate the dots (e.g. "Loading.", "Loading..", "Loading...")
@@ -104,7 +119,7 @@ int main() {
             break;
         }
     }
-
+*/
     // Make sure thread has finished
     if (loadingThread.joinable()) loadingThread.join();
 
@@ -134,6 +149,9 @@ int main() {
         //     if (animFrameCounter >= anims[0].frameCount) animFrameCounter = 0;
         //     UpdateModelAnimation(model, anims[0], (int)animFrameCounter);
         // }
+
+
+
 
  
             UPDATE_CAMERA();
