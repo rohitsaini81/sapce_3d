@@ -48,22 +48,44 @@ int main() {
     int dotCounter = 0;
     float timer = 0.0f;
     bool open = false;
-    BeginDrawing();
+    std::string loadingText = "Loading";
+
+            BeginDrawing();
             ClearBackground(RAYWHITE);
-
-            std::string loadingText = "Loading";
-            for (int i = 0; i < dotCounter; ++i) loadingText += ".";
-
+            loadingText += ".";
             DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
-
             EndDrawing();
 
 
 
+
    INIT_BEFORE();
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    loadingText += ".";
+    DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+    EndDrawing();
+
     InitPhysics();
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    loadingText += ".";
+    DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+    EndDrawing();
+
     CAM_INIT();
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    loadingText += ".";
+    DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+    EndDrawing();
+
     Player_Init(dynamicsWorld);
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    loadingText += ".";
+    DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
+    EndDrawing();
 
 
 
