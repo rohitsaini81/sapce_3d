@@ -6,7 +6,7 @@
 #include "player.h"
 Camera camera = {0};
 float pitch = 15.0f;  // Slightly looking down
-float cameraDistance = 10.0f;
+float cameraDistance = 20.0f;
 void CAM_INIT(){
         // Camera setup
         camera.projection = CAMERA_PERSPECTIVE;
