@@ -1,122 +1,66 @@
-/*******************************************************************************************
-*
-*   raylib [shaders] example - Raymarching shapes generation
-*
-*   Example complexity rating: [★★★★] 4/4
-*
-*   NOTE: This example requires raylib OpenGL 3.3 for shaders support and only #version 330
-*         is currently supported. OpenGL ES 2.0 platforms are not supported at the moment.
-*
-*   Example originally created with raylib 2.0, last time updated with raylib 4.2
-*
-*   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-*   BSD-like license that allows static linking with closed source software
-*
-*   Copyright (c) 2018-2025 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
-
 #include "raylib.h"
+#include <thread>
+#include <atomic>
+#include <chrono>
 #include "iostream"
-#if defined(PLATFORM_DESKTOP)
-    #define GLSL_VERSION            330
-#else   // PLATFORM_ANDROID, PLATFORM_WEB -> Not supported at this moment
-    #define GLSL_VERSION            100
-#endif
 
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
-int main(void)
-{
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-const std::string Path= "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/home/scientist/ArchLinux/work/raylib-cpp/rohit/src/resources/shaders/glsl330/raymarching.fs";
+// Simulate resource loading
+void LoadResources(std::atomic<bool> &loadingDone) {
+    // Simulate long loading process
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    
+    // TODO: Load your actual textures, sounds, etc. here using LoadTexture(), LoadSound(), etc.
+    
+    loadingDone = true;
+}
 
+int main() {
+    InitWindow(800, 450, "raylib multithreaded loading");
+    SetTargetFPS(60);
 
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screenWidth, screenHeight, "raylib [shaders] example - raymarching shapes");
+    std::atomic<bool> loadingDone = false;
 
-    Camera camera = { 0 };
-    camera.position = (Vector3){ 2.5f, 2.5f, 3.0f };    // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.7f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera.fovy = 65.0f;                                // Camera field-of-view Y
-    camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
+    // Start resource loading in background thread
+    std::thread loadingThread(LoadResources, std::ref(loadingDone));
 
-    // Load raymarching shader
-    // NOTE: Defining 0 (NULL) for vertex shader forces usage of internal default vertex shader
+    int dotCounter = 0;
+    float timer = 0.0f;
 
-    Shader shader = LoadShader(0,Path.c_str());
+    while (!WindowShouldClose()) {
+        if (!loadingDone) {
+            // Animate the dots (e.g. "Loading.", "Loading..", "Loading...")
+            timer += GetFrameTime();
+            if (timer >= 0.5f) {
+                dotCounter = (dotCounter + 1) % 4;  // Cycle through 0 to 3
+                timer = 0.0f;
+            }
 
-    // Get shader locations for required uniforms
-    int viewEyeLoc = GetShaderLocation(shader, "viewEye");
-    int viewCenterLoc = GetShaderLocation(shader, "viewCenter");
-    int runTimeLoc = GetShaderLocation(shader, "runTime");
-    int resolutionLoc = GetShaderLocation(shader, "resolution");
-
-    float resolution[2] = { (float)screenWidth, (float)screenHeight };
-    SetShaderValue(shader, resolutionLoc, resolution, SHADER_UNIFORM_VEC2);
-
-    float runTime = 0.0f;
-
-    DisableCursor();                    // Limit cursor to relative movement inside the window
-    SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!WindowShouldClose())        // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
-        UpdateCamera(&camera, CAMERA_FIRST_PERSON);
-
-        float cameraPos[3] = { camera.position.x, camera.position.y, camera.position.z };
-        float cameraTarget[3] = { camera.target.x, camera.target.y, camera.target.z };
-
-        float deltaTime = GetFrameTime();
-        runTime += deltaTime;
-
-        // Set shader required uniform values
-        //SetShaderValue(shader, viewEyeLoc, cameraPos, SHADER_UNIFORM_VEC3);
-        //SetShaderValue(shader, viewCenterLoc, cameraTarget, SHADER_UNIFORM_VEC3);
-        //SetShaderValue(shader, runTimeLoc, &runTime, SHADER_UNIFORM_FLOAT);
-
-        // Check if screen is resized
-        if (IsWindowResized())
-        {
-            resolution[0] = (float)GetScreenWidth();
-            resolution[1] = (float)GetScreenHeight();
-            SetShaderValue(shader, resolutionLoc, resolution, SHADER_UNIFORM_VEC2);
-        }
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
+            BeginDrawing();
             ClearBackground(RAYWHITE);
 
-            // We only draw a white full-screen rectangle,
-            // frame is generated in shader using raymarching
-            BeginShaderMode(shader);
-                DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), WHITE);
-            EndShaderMode();
+            std::string loadingText = "Loading";
+            for (int i = 0; i < dotCounter; ++i) loadingText += ".";
 
-            DrawText("(c) Raymarching shader by Iñigo Quilez. MIT License.", GetScreenWidth() - 280, GetScreenHeight() - 20, 10, BLACK);
+            DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
 
-        EndDrawing();
-        //----------------------------------------------------------------------------------
+            EndDrawing();
+        } else {
+            // Done loading, break and show your actual scene
+            break;
+        }
     }
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    UnloadShader(shader);           // Unload shader
+    // Make sure thread has finished
+    if (loadingThread.joinable()) loadingThread.join();
 
-    CloseWindow();                  // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    // Normally continue to your game or menu screen
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        DrawText("Resources Loaded!", 300, 200, 30, GREEN);
+        EndDrawing();
+    }
 
+    CloseWindow();
     return 0;
 }

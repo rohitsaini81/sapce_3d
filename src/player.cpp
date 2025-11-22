@@ -1,6 +1,11 @@
 #include "player.h"
+<<<<<<< HEAD
 #include "camera.h"
 #include "global_var.h"
+=======
+#include "Controls/camera.h"
+#include "ETC/global_var.h"
+>>>>>>> main
 #include "raymath.h"
 #include "raylib.h"
 #include <bullet/LinearMath/btVector3.h>
@@ -52,15 +57,26 @@ void Player_Init(btDiscreteDynamicsWorld* world) {
     playerBody->setActivationState(DISABLE_DEACTIVATION);
 
     world->addRigidBody(playerBody);
+<<<<<<< HEAD
 const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
 
     Model umodel = LoadModel(modelPath);
 User = new PlayerModel(playerBody, umodel);
+=======
+    std::string modelPath = project_dir+"/assets/rick/rick.glb";
+    Model umodel = LoadModel(modelPath.c_str());
+
+    User = new PlayerModel(playerBody, umodel);
+>>>>>>> main
 }
 
 void Player_Update(float deltaTime) {
     if (!User || !User->rigibBodyofModel) return;
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> main
     if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
@@ -120,4 +136,8 @@ if (!User || !User->rigibBodyofModel){ return;}
 // std::cout << "Mesh count: " << User->onlyModel.meshCount << "\n";
 
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

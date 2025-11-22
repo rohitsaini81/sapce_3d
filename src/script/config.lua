@@ -25,13 +25,13 @@ return {
 
     Init_elements = function()
         print("creating a new object in world")
-        for i = 1, 0 do
+        for i = 1, 10 do
         print("i = " .. i)
-        CREATE_ELEM("CUBE","path","/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/gltf/test.glb")
+        CREATE_ELEM("CUBE","path","/assets/gltf/test.glb")
         CREATE_ELEM("BOX","heightxwidth","xy")
 
         end
-  
+
 
     end,
 }

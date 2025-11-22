@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # ---- Paths ----
 
 # raylib-cpp base directory
-set(RAYLIB_CPP_DIR "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp")
+set(RAYLIB_CPP_DIR "/run/media/rick/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp")
 
 # Lua 5.1.5
 add_subdirectory(lua-5.1.5)
@@ -55,18 +55,26 @@ include_directories(
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/physics.cpp
-    src/global_var.cpp
-    src/camera.cpp
-    src/objects.cpp
-    src/elements.cpp
+    src/ETC/global_var.cpp
+    src/Controls/camera.cpp
+    src/3dObjects/objects.cpp
+    src/3dObjects/elements.cpp
     src/script/script.cpp
+<<<<<<< HEAD
     src/person.cpp
     src/model_obj.cpp
     src/Models.cpp
     src/player.cpp
 
+=======
+    src/NPC/person.cpp
+    src/3dObjects/model_obj.cpp
+    src/3dObjects/Models.cpp
+>>>>>>> main
     externals/rlImGui/rlImGui.h
     externals/imgui/imgui.h
+    src/player.cpp
+    src/related/file.cpp
     ${IMGUI_SOURCES}
     )
 
@@ -89,3 +97,21 @@ target_link_libraries(${PROJECT_NAME}
     # Optional stdlib
     stdc++
 )
+
+
+# Copy assets to build directory
+add_custom_command(
+    TARGET ab_rick POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/src/assets
+            ${CMAKE_CURRENT_BINARY_DIR}/assets
+)
+
+# Copy scripts to build directory
+add_custom_command(
+    TARGET ab_rick POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/src/script
+            ${CMAKE_CURRENT_BINARY_DIR}/script
+)
+
