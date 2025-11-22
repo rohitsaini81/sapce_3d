@@ -52,15 +52,15 @@ void Player_Init(btDiscreteDynamicsWorld* world) {
     playerBody->setActivationState(DISABLE_DEACTIVATION);
 
     world->addRigidBody(playerBody);
-const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
+    std::string modelPath = project_dir+"/assets/rick/rick.glb";
+    Model umodel = LoadModel(modelPath.c_str());
 
-    Model umodel = LoadModel(modelPath);
-User = new PlayerModel(playerBody, umodel);
+    User = new PlayerModel(playerBody, umodel);
 }
 
 void Player_Update(float deltaTime) {
     if (!User || !User->rigibBodyofModel) return;
- 
+
     if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) return;
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);

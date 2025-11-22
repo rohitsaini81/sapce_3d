@@ -5,7 +5,7 @@
 #include "raylib.h"
 #include <btBulletDynamicsCommon.h>
 
-extern const std::string project_dir;
+extern std::string project_dir;
 extern float yaw;
 extern Model plane;
 extern Vector3 playerPos;

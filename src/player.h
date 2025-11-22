@@ -8,7 +8,7 @@
 struct PlayerModel {
     btRigidBody* rigibBodyofModel;
     // btCollisionShape* playerShape;
-    // btTransform startTransform;
+// btTransform startTransform;
     // btDefaultMotionState* motionState;
     Model onlyModel;
     static Vector3 GetPosition();

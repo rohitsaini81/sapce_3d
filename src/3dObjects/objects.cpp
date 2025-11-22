@@ -2,8 +2,8 @@
 #include "objects.h"
 #include "physics.h" // make sure dynamicsWorld is visible
 #include "iostream"
-#include "elements.h" 
-#include "LinearMath/btAlignedObjectArray.h" 
+#include "elements.h"
+#include "LinearMath/btAlignedObjectArray.h"
 #include "../ETC/global_var.h"
 #include "Models.h"
 Elements* objectal[4]; // array of pointers
@@ -16,9 +16,9 @@ btRigidBody* TerrainRegidBody;
 
 
 void Init_Elems(){
-   try{ 
+   try{
     // Model levelModel = LoadModel("assets/american_road_intersection.glb");
-    Model levelModel = LoadModel((project_dir+"src/assets/american_road_intersection.glb").c_str());
+    Model levelModel = LoadModel((project_dir+"/assets/american_road_intersection.glb").c_str());
 
     if (levelModel.meshCount == 0) {
     std::cerr << "Warning: Loaded model has no meshes." << std::endl;
@@ -36,7 +36,7 @@ if (shape && motionState && TerrainRegidBody) {
     dynamicsWorld->addRigidBody(TerrainRegidBody);
     // MyModel obj(TerrainRegidBody, levelModel);
     models.emplace_back(TerrainRegidBody, levelModel);
-}   
+}
 }
 catch (const std::exception& e) {
     std::cerr << "Error in Init_Elems(): " << e.what() << std::endl;
@@ -59,14 +59,14 @@ void CREATE_ELEM() {
                 // rigidBodies.push_back(newElem->body);
 
 
-        
+
 
                 // objectal[0]=newElem;
                 // rigidBodyList.push_back(newElem->body);
                 // elementList.push_back(newElem);
-                
-                
-                
+
+
+
                 // objectal[0] = new Elements(ElementType::BOX, dynamicsWorld);                std::cout << "Rigid body added\n";
             } else {
                 std::cerr << "Invalid world or body\n";

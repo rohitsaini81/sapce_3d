@@ -22,7 +22,7 @@ extern "C" {
 #include <filesystem>
 
 #include "player.h"
-
+#include "related/file.h"
 // #include "imgui.h"
 // #include "rlImGui.h"
 
@@ -86,16 +86,16 @@ int main() {
     loadingText += ".";
     DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
     EndDrawing();
-
-
+    std::string path = getExecutableDir();
 
     //--->
-    const std::string Path = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
-    const char* modelPath = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/src/assets/rick/rick.glb";
+    std::string assetsDir = pathJoin(getExecutableDir(), "assets");
+    std::string scriptDir = pathJoin(getExecutableDir(), "script");
+    const std::string modelPath = assetsDir+"/rick/rick.glb";
     // if (plane.meshCount == 0) {
     //     std::cerr << "Failed to load plane model!" << std::endl;
     // }
-    Model model = LoadModel(modelPath);
+    Model model = LoadModel(modelPath.c_str());
     // int animCount = 0;
     // ModelAnimation* anims = LoadModelAnimations(modelPath, &animCount);
     // float animFrameCounter = 0.0f;
@@ -103,7 +103,8 @@ int main() {
 
     /***************************Lua script loading****************************/
     // Lua is here
-    const std::string scriptPath = project_dir + "src/script/config.lua";
+    const std::string scriptPath = scriptDir+ "/config.lua";
+    std::cout<<scriptPath;
     lua_State* L = luaL_newstate();
     // luaL_openlibs(L);
     luaL_dostring(L, "print('Hello from Lua 5.1.5')");
@@ -175,9 +176,9 @@ int main() {
 
 
 
- 
+
             UPDATE_CAMERA();
-        
+
 
 
         if (IsKeyPressed(KEY_X)) {
@@ -207,11 +208,11 @@ int main() {
         // DrawModel(model,{0,0,0},1.0f,WHITE);
 
 
-        
-        
-        
+
+
+
         render(delta);
-        
+
         EndMode3D();
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
