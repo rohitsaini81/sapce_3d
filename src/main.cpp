@@ -229,12 +229,6 @@ if(IsKeyPressed(KEY_O)){
         Player_Update(delta);
         Player_Render();
 
-        DrawModel(model,{0,0,0},1.0f,WHITE);
-
-
-
-
-
         render(delta);
         }
         EndMode3D();

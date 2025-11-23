@@ -108,16 +108,24 @@ if (!User || !User->rigibBodyofModel){ return;}
 
     if (!User->rigibBodyofModel || !User->rigibBodyofModel->getMotionState()) {return;}
 
+
+
     btTransform trans;
-    User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
-    btVector3 pos = trans.getOrigin();
-    Vector3 position = { pos.getX(), pos.getY(), pos.getZ() };
-    // DrawCube({pos.getX(), pos.getY(), pos.getZ()}, 0.5f, 1.9f, 0.5f, GREEN);
+User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
+btVector3 pos = trans.getOrigin();
 
+// Convert to Raylib vector
+Vector3 position = { pos.getX(), pos.getY(), pos.getZ() };
 
+// Calculate model height once (do NOT do this every frame)
+static BoundingBox box = GetModelBoundingBox(User->onlyModel);
+static float height = box.max.y - box.min.y;
 
-    DrawModel(User->onlyModel,position , 1.0f, WHITE);
-// std::cout << "Mesh count: " << User->onlyModel.meshCount << "\n";
+// Fix offset so model stands on physics body
+position.y -= height * 0.45f;
+
+// Now draw properly aligned model
+DrawModel(User->onlyModel, position, 1.0f, WHITE);
 
 
 }
