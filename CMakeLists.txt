@@ -10,14 +10,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(RAYLIB_CPP_DIR "/run/media/rick/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp")
 
 # Lua 5.1.5
-add_subdirectory(lua-5.1.5)
+add_subdirectory(externals/lua-5.1.5)
 
 # ---- Include Directories ----
 
 
 include_directories(externals/rlImGui)
 include_directories(externals/imgui)
-
+include_directories(externals/lua-5.1.5)
 
 
     # Add sources
@@ -38,7 +38,7 @@ include_directories(
     ${RAYLIB_CPP_DIR}/build/_deps/raylib-src/src
 
     # Lua 5.1.5 headers
-    ${CMAKE_SOURCE_DIR}/lua-5.1.5/src
+    ${CMAKE_SOURCE_DIR}/externals/lua-5.1.5/src
 
     # Bullet Physics
     /usr/local/include/bullet
