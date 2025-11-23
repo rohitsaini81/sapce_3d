@@ -22,4 +22,35 @@ void Player_Render();
 
 extern PlayerModel* User;
 
+
+
+
+
+
+class Player
+{
+public:
+    Player(btDiscreteDynamicsWorld* world, const Model& model, const Vector3& startPos);
+    ~Player();
+
+    void Update(float deltaTime);
+    void Render();
+
+    Vector3 GetPosition() const;
+    btRigidBody* GetRigidBody() const { return rigidBody; }
+
+private:
+    btDiscreteDynamicsWorld* world;
+    btRigidBody* rigidBody;
+    btCollisionShape* shape;
+    btDefaultMotionState* motionState;
+
+    Model model;
+
+    float modelHeight;
+    void CalculateBoundingBoxHeight();
+};
+
+
+
 #endif

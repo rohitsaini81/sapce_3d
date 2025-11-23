@@ -21,7 +21,7 @@ extern "C" {
 #include "script/script.h"
 #include <filesystem>
 
-#include "player.h"
+#include "level/player/player.h"
 #include "related/file.h"
 #include "menu/menu.h"
 // #include "imgui.h"
@@ -42,7 +42,7 @@ int main() {
     SetTargetFPS(60);
     SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
 
-        Font font = GetFontDefault();
+    Font font = GetFontDefault();
     MenuScreen menu({ "Start Game", "Options", "Exit" }, font);
   //      std::atomic<bool> loadingDone = false;
 //std::thread loadingThread(LoadResources, std::ref(loadingDone));
@@ -81,7 +81,19 @@ int main() {
     DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
     EndDrawing();
 
-    Player_Init(dynamicsWorld);
+    //Player_Init(dynamicsWorld);
+    //
+
+
+    // class object player has bugs
+    Player* player = nullptr;
+    std::string modelPath2 = project_dir + "/assets/rick/rick.glb";
+    player = new Player(dynamicsWorld, modelPath2, {0, 2, 0});
+
+
+
+
+
     BeginDrawing();
     ClearBackground(RAYWHITE);
     loadingText += ".";
@@ -226,8 +238,10 @@ if(IsKeyPressed(KEY_O)){
 
         if(screen_number==1){
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
-        Player_Update(delta);
-        Player_Render();
+        //Player_Update(delta);
+        player->Update(delta);
+        //Player_Render();
+        player->Render();
 
         render(delta);
         }
