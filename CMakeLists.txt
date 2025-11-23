@@ -67,6 +67,7 @@ add_executable(${PROJECT_NAME}
     externals/imgui/imgui.h
     src/player.cpp
     src/related/file.cpp
+    src/menu/menu.cpp
     ${IMGUI_SOURCES}
     )
 

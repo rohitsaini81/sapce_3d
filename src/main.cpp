@@ -23,6 +23,7 @@ extern "C" {
 
 #include "player.h"
 #include "related/file.h"
+#include "menu/menu.h"
 // #include "imgui.h"
 // #include "rlImGui.h"
 
@@ -41,8 +42,8 @@ int main() {
     SetTargetFPS(60);
     SetMousePosition(GetScreenWidth() / 2, GetScreenHeight() / 2);
 
-
-
+        Font font = GetFontDefault();
+    MenuScreen menu({ "Start Game", "Options", "Exit" }, font);
   //      std::atomic<bool> loadingDone = false;
 //std::thread loadingThread(LoadResources, std::ref(loadingDone));
     int dotCounter = 0;
@@ -146,7 +147,7 @@ int main() {
     // Make sure thread has finished
     //if (loadingThread.joinable()) loadingThread.join();
 
-
+int screen_number=0;
     while (!WindowShouldClose()) {
         time_t currentModified = getFileLastModifiedTime(scriptPath);
         if (currentModified != lastModified) {
@@ -163,6 +164,21 @@ int main() {
         }
 
         float delta = GetFrameTime();
+
+        // menu screen
+        if(screen_number==0){menu.Update();
+        int choice = menu.GetSelected();
+        if (choice != -1) {
+            if (choice == 0) {
+                TraceLog(LOG_INFO, "Start Game selected!");
+                screen_number=1;
+            }
+            if (choice == 1) {
+                TraceLog(LOG_INFO, "Options selected!");
+                screen_number=2;
+            }
+            if (choice == 2) break; // Exit
+        }}
 
 
         // Handle animation
@@ -201,22 +217,26 @@ if(IsKeyPressed(KEY_O)){
         BeginDrawing();
         ClearBackground(BLACK);
         // ClearBackground(RAYWHITE);
+
+        if(screen_number==0){menu.Render();}
         BeginMode3D(camera);
+
 
         // DrawCube({0.0f, 0.0f, 0.0f}, 20.0f, 0.1f, 20.0f, WHITE);
 
+        if(screen_number==1){
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
         Player_Update(delta);
         Player_Render();
 
-        // DrawModel(model,{0,0,0},1.0f,WHITE);
+        DrawModel(model,{0,0,0},1.0f,WHITE);
 
 
 
 
 
         render(delta);
-
+        }
         EndMode3D();
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
