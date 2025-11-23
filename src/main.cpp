@@ -26,14 +26,14 @@ extern "C" {
 // #include "imgui.h"
 // #include "rlImGui.h"
 
-void LoadResources(std::atomic<bool>& loadingDone) {
+//void LoadResources(std::atomic<bool>& loadingDone) {
     // INIT_BEFORE();
     // InitPhysics();
     // CAM_INIT();
     // Player_Init(dynamicsWorld);
 
 
-}
+//}
 int main() {
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT); // Enable Multi Sampling Anti Aliasing 4x (if available)
@@ -43,8 +43,8 @@ int main() {
 
 
 
-        std::atomic<bool> loadingDone = false;
-    std::thread loadingThread(LoadResources, std::ref(loadingDone));
+  //      std::atomic<bool> loadingDone = false;
+//std::thread loadingThread(LoadResources, std::ref(loadingDone));
     int dotCounter = 0;
     float timer = 0.0f;
     bool open = false;
@@ -144,7 +144,7 @@ int main() {
     }
 */
     // Make sure thread has finished
-    if (loadingThread.joinable()) loadingThread.join();
+    //if (loadingThread.joinable()) loadingThread.join();
 
 
     while (!WindowShouldClose()) {
@@ -178,8 +178,12 @@ int main() {
 
 
             UPDATE_CAMERA();
-
-
+if(IsKeyPressed(KEY_P)){
+    cameraDistance++;
+}
+if(IsKeyPressed(KEY_O)){
+    cameraDistance--;
+}
 
         if (IsKeyPressed(KEY_X)) {
             open = !open;
