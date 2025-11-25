@@ -32,9 +32,13 @@ extern "C" {
     // InitPhysics();
     // CAM_INIT();
     // Player_Init(dynamicsWorld);
-
-
 //}
+
+
+#include <vector>
+#include <iomanip>
+#include <sstream>
+namespace fs = std::filesystem;
 int main() {
     // Initialization
     SetConfigFlags(FLAG_MSAA_4X_HINT); // Enable Multi Sampling Anti Aliasing 4x (if available)
@@ -89,7 +93,26 @@ int main() {
     Player* player = nullptr;
     std::string modelPath2 = project_dir + "/assets/rick/rick.glb";
     player = new Player(dynamicsWorld, modelPath2, {0, 2, 0});
+  
+    std::string video_path = project_dir +"/assets/minecraft/video_4min.mp4";
+//   Video video = LoadVideo(video_path);   // load MP4
+    const int totalFrames = 2400;   // number of frames you extracted
+    std::vector<Texture2D> frames;
+    std::string base_path = project_dir + "/assets/videos/minecraft/assets/frames"; // prefix for frames
+//
+    std::string frames_dir = project_dir + "/assets/videos/minecraft/assets/";
 
+ for (int i = 1; i <= totalFrames; i++) {
+        std::stringstream ss;
+        ss << frames_dir << "frame_" << std::setw(4) << std::setfill('0') << i << ".jpg";
+        std::string filePath = ss.str();
+
+        if (fs::exists(filePath)) { // only load if file exists
+            frames.push_back(LoadTexture(filePath.c_str()));
+        }
+    }
+
+    int currentFrame = 0;
 
 
 
@@ -177,6 +200,16 @@ int screen_number=0;
 
         float delta = GetFrameTime();
 
+
+//video 
+//
+        currentFrame++;
+        if (currentFrame >= totalFrames) currentFrame = 0;
+
+
+
+
+
         // menu screen
         if(screen_number==0){menu.Update();
         int choice = menu.GetSelected();
@@ -230,7 +263,10 @@ if(IsKeyPressed(KEY_O)){
         ClearBackground(BLACK);
         // ClearBackground(RAYWHITE);
 
-        if(screen_number==0){menu.Render();}
+        if(screen_number==0){
+menu.Render();
+        DrawTexture(frames[currentFrame], 0, 0, WHITE);
+}
         BeginMode3D(camera);
 
 
@@ -249,6 +285,11 @@ if(IsKeyPressed(KEY_O)){
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
         EndDrawing();
+    }
+
+
+    for (auto& tex : frames) {
+        UnloadTexture(tex);
     }
 
 
