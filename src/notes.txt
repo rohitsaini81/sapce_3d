@@ -1,0 +1,17 @@
+const float videoFPS = 30.0f;
+float frameTimer = 0.0f;
+
+while (!WindowShouldClose()) {
+    frameTimer += GetFrameTime(); // time elapsed since last frame in seconds
+    if (frameTimer >= 1.0f / videoFPS) {
+        frameTimer = 0.0f;
+        currentFrame++;
+        if (currentFrame >= (int)frames.size()) currentFrame = 0;
+    }
+
+    BeginDrawing();
+    ClearBackground(BLACK);
+    DrawTexture(frames[currentFrame], 0, 0, WHITE);
+    EndDrawing();
+}
+
