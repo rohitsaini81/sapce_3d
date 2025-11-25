@@ -26,6 +26,8 @@ target_link_libraries(raylib_cpp INTERFACE raylib)
 # Lua 5.1.5
 add_subdirectory(externals/lua-5.1.5)
 add_subdirectory(externals/bullet3)
+
+
 # ---- Include Directories ----
 
 
@@ -49,7 +51,7 @@ include_directories(
 
     # raylib-cpp and raylib headers
     ${CMAKE_SOURCE_DIR}/externals/raylib/src        # raylib.h
-    ${CMAKE_SOURCE_DIR}/externals/raylib-cpp/include 
+    ${CMAKE_SOURCE_DIR}/externals/raylib-cpp/include
     # Lua 5.1.5 headers
     ${CMAKE_SOURCE_DIR}/externals/lua-5.1.5/src
 
