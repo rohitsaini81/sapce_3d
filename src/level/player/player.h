@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#include <bullet/btBulletDynamicsCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 class Player
 {

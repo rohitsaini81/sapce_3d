@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 // #include <btBulletDynamicsCommon.h>
-#include <bullet/btBulletDynamicsCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 // External declarations of Bullet components
 extern btDiscreteDynamicsWorld* dynamicsWorld;

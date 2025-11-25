@@ -3,7 +3,7 @@
 #include "ETC/global_var.h"
 #include "raymath.h"
 #include "raylib.h"
-#include <bullet/LinearMath/btVector3.h>
+#include <LinearMath/btVector3.h>
 #include <iostream>
 
 

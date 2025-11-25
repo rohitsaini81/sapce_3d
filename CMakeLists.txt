@@ -4,45 +4,57 @@ project(ab_rick)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+# --- Bullet Physics (in externals/bullet3) ---
+set(BULLET_BUILD_BULLET2_LIBS ON CACHE BOOL "Build Bullet")
+set(BULLET_BUILD_EXTRAS OFF CACHE BOOL "")
+set(BULLET_BUILD_UNIT_TESTS OFF CACHE BOOL "")
 # ---- Paths ----
 
 # raylib-cpp base directory
-set(RAYLIB_CPP_DIR "/run/media/rick/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp")
+# --- Raylib (C library) ---
+add_subdirectory(externals/raylib)
+
+# --- raylib-cpp wrapper ---
+add_library(raylib_cpp INTERFACE)
+target_include_directories(raylib_cpp INTERFACE
+    ${CMAKE_SOURCE_DIR}/externals/raylib-cpp/include
+)
+target_link_libraries(raylib_cpp INTERFACE raylib)
+
 
 # Lua 5.1.5
 add_subdirectory(externals/lua-5.1.5)
-
+add_subdirectory(externals/bullet3)
 # ---- Include Directories ----
 
 
-include_directories(externals/rlImGui)
-include_directories(externals/imgui)
+#include_directories(externals/rlImGui)
+#include_directories(externals/imgui)
 include_directories(externals/lua-5.1.5)
 
 
     # Add sources
-set(IMGUI_SOURCES
-    ./externals/imgui/imgui.cpp
-    ./externals/imgui/imgui_draw.cpp
-    ./externals/imgui/imgui_tables.cpp
-    ./externals/imgui/imgui_widgets.cpp
-    ./externals/rlImGui/rlImGui.cpp
-)
+#set(IMGUI_SOURCES
+#   ./externals/imgui/imgui.cpp
+#   ./externals/imgui/imgui_draw.cpp
+#   ./externals/imgui/imgui_tables.cpp
+#   ./externals/imgui/imgui_widgets.cpp
+#   ./externals/rlImGui/rlImGui.cpp
+#)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/script
 
     # raylib-cpp and raylib headers
-    ${RAYLIB_CPP_DIR}/include
-    ${RAYLIB_CPP_DIR}/build/_deps/raylib-src/src
-
+    ${CMAKE_SOURCE_DIR}/externals/raylib/src        # raylib.h
+    ${CMAKE_SOURCE_DIR}/externals/raylib-cpp/include 
     # Lua 5.1.5 headers
     ${CMAKE_SOURCE_DIR}/externals/lua-5.1.5/src
 
     # Bullet Physics
-    /usr/local/include/bullet
-    /usr/local/include
+     ${CMAKE_SOURCE_DIR}/externals/bullet3/src
 )
 
 # ---- Link Directories ----
@@ -63,8 +75,8 @@ add_executable(${PROJECT_NAME}
     src/NPC/person.cpp
     src/3dObjects/model_obj.cpp
     src/3dObjects/Models.cpp
-    externals/rlImGui/rlImGui.h
-    externals/imgui/imgui.h
+#   externals/rlImGui/rlImGui.h
+#   externals/imgui/imgui.h
     src/player.cpp
     src/related/file.cpp
     src/menu/menu.cpp
@@ -75,8 +87,8 @@ add_executable(${PROJECT_NAME}
 # ---- Linking ----
 target_link_libraries(${PROJECT_NAME}
     # Your static raylib build
-    ${RAYLIB_CPP_DIR}/build/_deps/raylib-build/raylib/libraylib.a
-
+#${RAYLIB_CPP_DIR}/build/_deps/raylib-build/raylib/libraylib.a
+    raylib_cpp
     # Lua 5.1.5 static lib
     lua_static
 

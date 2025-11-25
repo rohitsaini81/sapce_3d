@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include "raylib.h"
-#include <bullet/btBulletDynamicsCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 
 struct PlayerModel {
