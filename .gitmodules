@@ -1,6 +1,24 @@
 [submodule "externals/rlImGui"]
-	path = externals/rlImGui
-	url = https://github.com/raylib-extras/rlImGui.git
+    path = externals/rlImGui
+    url = https://github.com/raylib-extras/rlImGui.git
+
 [submodule "externals/bullet3"]
-	path = externals/bullet3
-	url = https://github.com/bulletphysics/bullet3
+    path = externals/bullet3
+    url = https://github.com/bulletphysics/bullet3.git
+
+[submodule "externals/imgui"]
+    path = externals/imgui
+    url = https://github.com/ocornut/imgui.git
+
+[submodule "externals/lua-5.1.5"]
+    path = externals/lua-5.1.5
+    url = https://github.com/lua/lua.git
+
+[submodule "externals/raylib"]
+    path = externals/raylib
+    url = https://github.com/raysan5/raylib.git
+
+[submodule "externals/raylib-cpp"]
+    path = externals/raylib-cpp
+    url = https://github.com/RobLoach/raylib-cpp.git
+
