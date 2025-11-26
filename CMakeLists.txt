@@ -83,6 +83,7 @@ add_executable(${PROJECT_NAME}
     src/related/file.cpp
     src/menu/menu.cpp
     src/level/player/player.cpp
+    src/video_player.cpp
     ${IMGUI_SOURCES}
     )
 

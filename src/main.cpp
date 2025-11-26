@@ -24,6 +24,8 @@ extern "C" {
 #include "level/player/player.h"
 #include "related/file.h"
 #include "menu/menu.h"
+#include "video_player.h"
+
 // #include "imgui.h"
 // #include "rlImGui.h"
 
@@ -93,29 +95,11 @@ int main() {
     Player* player = nullptr;
     std::string modelPath2 = project_dir + "/assets/rick/rick.glb";
     player = new Player(dynamicsWorld, modelPath2, {0, 2, 0});
-  
-    std::string video_path = project_dir +"/assets/minecraft/video_4min.mp4";
-//   Video video = LoadVideo(video_path);   // load MP4
-    const int totalFrames = 2400;   // number of frames you extracted
-    std::vector<Texture2D> frames;
-    std::string base_path = project_dir + "/assets/videos/minecraft/assets/frames"; // prefix for frames
+
+    std::string video_path = project_dir +"/assets/videos/minecraft/video_4min.mp4";
 //
-    std::string frames_dir = project_dir + "/assets/videos/minecraft/assets/";
 
- for (int i = 1; i <= totalFrames; i++) {
-        std::stringstream ss;
-        ss << frames_dir << "frame_" << std::setw(4) << std::setfill('0') << i << ".jpg";
-        std::string filePath = ss.str();
-
-        if (fs::exists(filePath)) { // only load if file exists
-            frames.push_back(LoadTexture(filePath.c_str()));
-        }
-    }
-
-    int currentFrame = 0;
-
-
-
+  //  VideoPlayer video(video_path);
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -152,36 +136,6 @@ int main() {
     // end lua here
     /*********************************************************************/
 
-
-/*
-    while (!WindowShouldClose()) {
-        if (!loadingDone) {
-            // Animate the dots (e.g. "Loading.", "Loading..", "Loading...")
-            timer += GetFrameTime();
-            if (timer >= 0.5f) {
-                dotCounter = (dotCounter + 1) % 4; // Cycle through 0 to 3
-                timer = 0.0f;
-            }
-
-            BeginDrawing();
-            ClearBackground(RAYWHITE);
-
-            std::string loadingText = "Loading";
-            for (int i = 0; i < dotCounter; ++i) loadingText += ".";
-
-            DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
-
-            EndDrawing();
-        }
-        else {
-            // Done loading, break and show your actual scene
-            break;
-        }
-    }
-*/
-    // Make sure thread has finished
-    //if (loadingThread.joinable()) loadingThread.join();
-
 int screen_number=0;
     while (!WindowShouldClose()) {
         time_t currentModified = getFileLastModifiedTime(scriptPath);
@@ -200,12 +154,8 @@ int screen_number=0;
 
         float delta = GetFrameTime();
 
-
-//video 
+//video
 //
-        currentFrame++;
-        if (currentFrame >= totalFrames) currentFrame = 0;
-
 
 
 
@@ -265,8 +215,7 @@ if(IsKeyPressed(KEY_O)){
 
         if(screen_number==0){
 menu.Render();
-        DrawTexture(frames[currentFrame], 0, 0, WHITE);
-}
+       }
         BeginMode3D(camera);
 
 
@@ -285,11 +234,6 @@ menu.Render();
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
         EndDrawing();
-    }
-
-
-    for (auto& tex : frames) {
-        UnloadTexture(tex);
     }
 
 
