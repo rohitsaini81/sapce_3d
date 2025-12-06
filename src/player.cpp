@@ -22,6 +22,7 @@ Vector3 PlayerModel::GetPosition() {
     btTransform trans;
     User->rigibBodyofModel->getMotionState()->getWorldTransform(trans);
     btVector3 pos = trans.getOrigin();
+    std::cout<<pos.getX()<<std::endl;
     return Vector3{pos.getX(), pos.getY(), pos.getZ()};  // ✅ correct conversion
 }
 

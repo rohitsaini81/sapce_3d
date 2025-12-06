@@ -229,9 +229,7 @@ if(IsKeyPressed(KEY_O)){
 
         if(screen_number==1){
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
-        //Player_Update(delta);
         player->Update(delta);
-        //Player_Render();
         player->Render();
 
         render(delta);
