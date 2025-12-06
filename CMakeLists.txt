@@ -5,6 +5,23 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
+
+
+
+# --- FFmpeg libraries ---
+find_library(AVFORMAT_LIB avformat REQUIRED)
+find_library(AVCODEC_LIB avcodec REQUIRED)
+find_library(AVUTIL_LIB avutil REQUIRED)
+find_library(SWSCALE_LIB swscale REQUIRED)
+
+# If swresample or avdevice becomes needed:
+# find_library(SWRESAMPLE_LIB swresample)
+# find_library(AVDEVICE_LIB avdevice)
+
+
+
+
+
 # --- Bullet Physics (in externals/bullet3) ---
 set(BULLET_BUILD_BULLET2_LIBS ON CACHE BOOL "Build Bullet")
 set(BULLET_BUILD_EXTRAS OFF CACHE BOOL "")
@@ -83,7 +100,7 @@ add_executable(${PROJECT_NAME}
     src/related/file.cpp
     src/menu/menu.cpp
     src/level/player/player.cpp
-    src/video_player.cpp
+    src/video_player/VideoPlayer.cpp
     ${IMGUI_SOURCES}
     )
 
@@ -105,6 +122,12 @@ target_link_libraries(${PROJECT_NAME}
 
     # Optional stdlib
     stdc++
+
+
+    ${AVFORMAT_LIB}
+    ${AVCODEC_LIB}
+    ${AVUTIL_LIB}
+    ${SWSCALE_LIB}
 )
 
 

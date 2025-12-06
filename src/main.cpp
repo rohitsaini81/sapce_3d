@@ -24,6 +24,9 @@ extern "C" {
 #include "level/player/player.h"
 #include "related/file.h"
 #include "menu/menu.h"
+#include "video_player/VideoPlayer.h"
+
+
 //#include "video_player.h"
 
 // #include "imgui.h"
@@ -96,11 +99,11 @@ int main() {
     std::string modelPath2 = project_dir + "/assets/rick/rick.glb";
     player = new Player(dynamicsWorld, modelPath2, {0, 2, 0});
 
-    std::string video_path = project_dir +"/assets/videos/minecraft/video_4min.mp4";
+    std::string video_path = project_dir +"/assets/videos/minecraft.mp4";
 //
 
   //  VideoPlayer video(video_path);
-
+std::unique_ptr<VideoPlayer> video = std::make_unique<VideoPlayer>(video_path.c_str());
     BeginDrawing();
     ClearBackground(RAYWHITE);
     loadingText += ".";
@@ -161,7 +164,9 @@ int screen_number=0;
 
 
         // menu screen
-        if(screen_number==0){menu.Update();
+        if(screen_number==0){
+            menu.Update();
+        video->Update();   // decode next frame
         int choice = menu.GetSelected();
         if (choice != -1) {
             if (choice == 0) {
@@ -214,7 +219,8 @@ if(IsKeyPressed(KEY_O)){
         // ClearBackground(RAYWHITE);
 
         if(screen_number==0){
-menu.Render();
+            video->Render(0, 0);
+            menu.Render();
        }
         BeginMode3D(camera);
 
@@ -240,6 +246,7 @@ menu.Render();
     // Cleanup
     //--->
     // if (animCount > 0) UnloadModelAnimations(anims, animCount);
+    video.reset();
     CleanupPhysics();
     CloseWindow();
 
