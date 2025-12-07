@@ -30,6 +30,18 @@ extern "C" {
 #include <vector>
 #include <iomanip>
 #include <sstream>
+
+
+
+
+
+
+#include "rlImGui.h"
+#include "imgui.h"
+
+
+
+
 namespace fs = std::filesystem;
 int main() {
     // Initialization
@@ -123,6 +135,25 @@ int main() {
 
 
 int screen_number=0;
+
+    rlImGuiSetup(true);  // true = dark style
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // GAME LOOP HERE
+
     while (!WindowShouldClose()) {
         time_t currentModified = getFileLastModifiedTime(scriptPath);
         if (currentModified != lastModified) {
@@ -139,6 +170,10 @@ int screen_number=0;
         }
 
         float delta = GetFrameTime();
+
+        
+
+
 
 
 // UPDATE HERE
@@ -216,6 +251,15 @@ control->render();
         ClearBackground(BLACK);
         // ClearBackground(RAYWHITE);
 
+
+
+
+
+
+
+
+
+
         if(screen_number==0){
             video->Render(0, 0);
             menu.Render();
@@ -234,6 +278,15 @@ control->render();
     }
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
+
+                rlImGuiBegin();
+        // --- ImGui UI ---
+        ImGui::Begin("Demo Window");
+        ImGui::Text("Hello from ImGui!");
+ImGui::SliderFloat("Max Pitch", &maxPitch, 0.0f, 1.0f);
+ImGui::SliderFloat("Min Pitch", &minPitch, 0.0f, 1.0f);
+        ImGui::End();
+         rlImGuiEnd();
         EndDrawing();
     }
 

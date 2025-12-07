@@ -48,19 +48,19 @@ add_subdirectory(externals/bullet3)
 # ---- Include Directories ----
 
 
-#include_directories(externals/rlImGui)
-#include_directories(externals/imgui)
+include_directories(externals/rlImGui)
+include_directories(externals/imgui)
 include_directories(externals/lua-5.1.5)
 
 
     # Add sources
-#set(IMGUI_SOURCES
-#   ./externals/imgui/imgui.cpp
-#   ./externals/imgui/imgui_draw.cpp
-#   ./externals/imgui/imgui_tables.cpp
-#   ./externals/imgui/imgui_widgets.cpp
-#   ./externals/rlImGui/rlImGui.cpp
-#)
+set(IMGUI_SOURCES
+   ./externals/imgui/imgui.cpp
+   ./externals/imgui/imgui_draw.cpp
+   ./externals/imgui/imgui_tables.cpp
+   ./externals/imgui/imgui_widgets.cpp
+   ./externals/rlImGui/rlImGui.cpp
+)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
