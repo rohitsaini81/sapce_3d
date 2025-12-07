@@ -86,7 +86,7 @@ void Player::Update(float deltaTime)
 {
     if (!body) return;
 
-    float speed = 5.0f;
+    float playerMoveSpeed = 5.0f;
 
 
     Vector3 forward = Vector3Normalize(Vector3Subtract(camera.target, camera.position));
@@ -104,10 +104,17 @@ right.y = 0;
     if (IsKeyDown(KEY_S)) move = Vector3Subtract(move, forward);
     if (IsKeyDown(KEY_D)) move = Vector3Add(move, right);
     if (IsKeyDown(KEY_A)) move = Vector3Subtract(move, right);
+ if (IsKeyPressed(KEY_SPACE)){ body->applyCentralImpulse(btVector3(0, 5, 0));}
+
+          if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)){
+            playerMoveSpeed = 50;
+        }else{
+            playerMoveSpeed = 10;}
+
 
     move = Vector3Normalize(move);
 
-    btVector3 vel(move.x * speed, body->getLinearVelocity().y(), move.z * speed);
+    btVector3 vel(move.x * playerMoveSpeed, body->getLinearVelocity().y(), move.z * playerMoveSpeed);
     body->setLinearVelocity(vel);
 
     SyncRotation();
@@ -127,3 +134,5 @@ void Player::Render()
     DrawModel(model, position, 1.0f, WHITE);
 }
 
+
+Player* player = nullptr;

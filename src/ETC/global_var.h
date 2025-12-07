@@ -14,7 +14,7 @@ extern void INIT_BEFORE();
 // global_var.h
 extern Color g_scriptColor;
 extern float health;
-
+    
 btBvhTriangleMeshShape* CreateStaticCollisionShapeFromModel(const Model& model);
 
 

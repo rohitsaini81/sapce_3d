@@ -95,7 +95,6 @@ int main() {
 
 
     // class object player has bugs
-    Player* player = nullptr;
     std::string modelPath2 = project_dir + "/assets/rick/rick.glb";
     player = new Player(dynamicsWorld, modelPath2, {0, 2, 0});
 

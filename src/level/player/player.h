@@ -34,5 +34,8 @@ private:
     float modelHeight = 0.0f;
 };
 
+
+extern Player* player;
+
 #endif
 
