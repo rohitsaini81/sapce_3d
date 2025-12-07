@@ -88,6 +88,7 @@ add_executable(${PROJECT_NAME}
     src/physics.cpp
     src/ETC/global_var.cpp
     src/Controls/camera.cpp
+    src/Controls/Controller.cpp
     src/3dObjects/objects.cpp
     src/3dObjects/elements.cpp
     src/script/script.cpp

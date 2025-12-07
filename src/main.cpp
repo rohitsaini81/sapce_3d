@@ -27,19 +27,6 @@ extern "C" {
 #include "video_player/VideoPlayer.h"
 
 
-//#include "video_player.h"
-
-// #include "imgui.h"
-// #include "rlImGui.h"
-
-//void LoadResources(std::atomic<bool>& loadingDone) {
-    // INIT_BEFORE();
-    // InitPhysics();
-    // CAM_INIT();
-    // Player_Init(dynamicsWorld);
-//}
-
-
 #include <vector>
 #include <iomanip>
 #include <sstream>
@@ -90,11 +77,6 @@ int main() {
     DrawText(loadingText.c_str(), 350, 200, 30, DARKGRAY);
     EndDrawing();
 
-    //Player_Init(dynamicsWorld);
-    //
-
-
-    // class object player has bugs
     std::string modelPath2 = project_dir + "/assets/rick/rick.glb";
     player = new Player(dynamicsWorld, modelPath2, {0, 2, 0});
 
@@ -102,7 +84,8 @@ int main() {
 //
 
   //  VideoPlayer video(video_path);
-std::unique_ptr<VideoPlayer> video = std::make_unique<VideoPlayer>(video_path.c_str());
+    std::unique_ptr<VideoPlayer> video = std::make_unique<VideoPlayer>(video_path.c_str());
+
     BeginDrawing();
     ClearBackground(RAYWHITE);
     loadingText += ".";
@@ -138,6 +121,7 @@ std::unique_ptr<VideoPlayer> video = std::make_unique<VideoPlayer>(video_path.c_
     // end lua here
     /*********************************************************************/
 
+
 int screen_number=0;
     while (!WindowShouldClose()) {
         time_t currentModified = getFileLastModifiedTime(scriptPath);
@@ -156,12 +140,9 @@ int screen_number=0;
 
         float delta = GetFrameTime();
 
-//video
-//
 
-
-
-
+// UPDATE HERE
+control->update(delta);
         // menu screen
         if(screen_number==0){
             menu.Update();
@@ -177,7 +158,9 @@ int screen_number=0;
                 screen_number=2;
             }
             if (choice == 2) break; // Exit
-        }}
+        }}else{
+            UPDATE_CAMERA();
+
 
 
         // Handle animation
@@ -190,15 +173,28 @@ int screen_number=0;
 
 
 
+        if(IsKeyPressed(KEY_P)){
+            cameraDistance++;
+        }
+        if(IsKeyPressed(KEY_O)){
+            cameraDistance--;
+        }
+        if(IsKeyPressed(KEY_U)){
+            maxPitch++;
+        }
+        if(IsKeyPressed(KEY_I)){
+            maxPitch--;
+
+        }
+
+    
 
 
-            UPDATE_CAMERA();
-if(IsKeyPressed(KEY_P)){
-    cameraDistance++;
-}
-if(IsKeyPressed(KEY_O)){
-    cameraDistance--;
-}
+
+        }
+
+
+
 
         if (IsKeyPressed(KEY_X)) {
             open = !open;
@@ -212,7 +208,10 @@ if(IsKeyPressed(KEY_O)){
         }
 
 
-        // Render
+
+//  ************RENDER 3D HERE***********
+control->render();
+
         BeginDrawing();
         ClearBackground(BLACK);
         // ClearBackground(RAYWHITE);
@@ -220,20 +219,19 @@ if(IsKeyPressed(KEY_O)){
         if(screen_number==0){
             video->Render(0, 0);
             menu.Render();
-       }
-        BeginMode3D(camera);
-
-
-        // DrawCube({0.0f, 0.0f, 0.0f}, 20.0f, 0.1f, 20.0f, WHITE);
-
+        }
+        
+        
+        
         if(screen_number==1){
+            BeginMode3D(camera);
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
         player->Update(delta);
         player->Render();
 
         render(delta);
-        }
         EndMode3D();
+    }
 
         DrawText("SPACE ENGINE / RICK AND MORTY GM", 10, 10, 20, DARKGRAY);
         EndDrawing();

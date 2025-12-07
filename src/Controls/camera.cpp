@@ -7,6 +7,7 @@
 Camera camera = {0};
 float pitch = 15.0f;  // Slightly looking down
 float cameraDistance = 10.0f;
+
 void CAM_INIT(){
         // Camera setup
         camera.projection = CAMERA_PERSPECTIVE;
@@ -30,8 +31,9 @@ pitch -= mouseDelta.y * 0.1f;
 
 // Clamp pitch to avoid flipping
 
-if (pitch <=22.0f) pitch =22.0f;
-if (pitch >=80.0f) pitch = 80.0f;
+if (pitch <=minPitch) pitch =minPitch;
+if (pitch >=maxPitch) pitch = maxPitch;
+// std::cout<<maxPitch<<std::endl;
 // std::cout<<"pitch"<<pitch<<std::endl;
 // Convert spherical coordinates to cartesian
 Vector3 cameraOffset;

@@ -4,9 +4,13 @@
 #include <string>
 #include "raylib.h"
 #include <btBulletDynamicsCommon.h>
+#include "Controls/Controller.h"
 
 extern std::string project_dir;
 extern float yaw;
+extern float minPitch,maxPitch;
+
+extern Controller* control;
 extern Model plane;
 extern Vector3 playerPos;
 extern float playerMoveSpeed;

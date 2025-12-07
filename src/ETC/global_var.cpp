@@ -5,18 +5,28 @@
 #include "raylib.h"
 #include "../related/file.h"
 #include "iostream"
+
+
 std::string project_dir;
 //const std::string project_dir = "/run/media/rohit/8b5b9054-ef1c-4785-aa10-f6a2608b67c8/ArchLinux/work/raylib-cpp/rohit/";
+
+// CAMERA SETTINGS HERE
 float yaw = 0.0f;
+float minPitch=22.0f,maxPitch=80.0f;
+
+
 Vector3 playerPos = {0.0f, 0.0f, 0.0f};
 float playerMoveSpeed=20.0f;
 Model plane = {0};
-
 Color g_scriptColor = {0};
 
+Controller* control = nullptr;
 void INIT_BEFORE (){
-    project_dir = getExecutableDir();
 
+control = new Controller();
+
+    project_dir = getExecutableDir();
+    control = new Controller();
     Color g_scriptColor = {255, 0, 0, 255};
     std::cout<<"path"<<project_dir<<std::endl;
     plane = LoadModel((project_dir+"/assets/cube.glb").c_str());
