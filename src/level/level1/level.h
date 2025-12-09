@@ -6,11 +6,10 @@
 #include <vector>
 #include <string>
 
-struct Player;
 
 class Level {
 public:
-    Level(btDiscreteDynamicsWorld* world, Player* player = nullptr);
+    Level(btDiscreteDynamicsWorld* world);
     ~Level();
 
     void Load();
@@ -23,7 +22,6 @@ public:
 
 private:
     btDiscreteDynamicsWorld* dynamicsWorld;
-    Player* player;
 
     struct PhysObject {
         btCollisionShape* shape = nullptr;

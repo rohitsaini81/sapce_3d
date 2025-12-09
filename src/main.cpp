@@ -118,6 +118,8 @@ int main() {
     // float animFrameCounter = 0.0f;
 
 
+
+
     /***************************Lua script loading****************************/
     // Lua is here
     const std::string scriptPath = scriptDir+ "/config.lua";

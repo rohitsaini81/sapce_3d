@@ -9,6 +9,9 @@
 #include <lua.h>
 #include "../NPC/person.h"
 #include "../3dObjects/Models.h"
+
+#include "level/level1/level.h"
+
 // Bullet globals
 btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
 btBroadphaseInterface* broadphase = nullptr;
@@ -25,6 +28,7 @@ btCollisionShape* boxShape = nullptr;
 btDefaultMotionState* boxMotion = nullptr;
 btRigidBody* boxBody = nullptr;
 
+Level level1= nullptr;
 
 
 
@@ -70,7 +74,7 @@ void InitPhysics() {
 
 Init_Elems();
 
-
+level1 = new Level(&dynamicsWorld);
 
 
 }
