@@ -123,7 +123,7 @@ int main() {
     /***************************Lua script loading****************************/
     // Lua is here
     const std::string scriptPath = scriptDir+ "/config.lua";
-    std::cout<<scriptPath;
+    std::cout<<scriptPath<<std::endl;
     lua_State* L = luaL_newstate();
     // luaL_openlibs(L);
     luaL_dostring(L, "print('Hello from Lua 5.1.5')");
