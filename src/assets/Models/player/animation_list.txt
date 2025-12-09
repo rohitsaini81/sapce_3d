@@ -1,0 +1,4 @@
+1 idle
+2 punch
+3 running
+4 jump
