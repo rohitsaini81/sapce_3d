@@ -2,8 +2,8 @@
 #define PHYSICS_H
 
 #include "raylib.h"
-// #include <btBulletDynamicsCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include "level/level1/level.h"
 
 // External declarations of Bullet components
 extern btDiscreteDynamicsWorld* dynamicsWorld;
@@ -36,6 +36,7 @@ void testRayCast(Vector3 from, Vector3 to);
 void DrawRayLine(Vector3 from, Vector3 to, Color color = RED);
 // Player position tracking
 
+extern Level* level1;
 
 
 

@@ -10,7 +10,6 @@
 #include "../NPC/person.h"
 #include "../3dObjects/Models.h"
 
-#include "level/level1/level.h"
 
 // Bullet globals
 btDiscreteDynamicsWorld* dynamicsWorld = nullptr;
@@ -28,7 +27,7 @@ btCollisionShape* boxShape = nullptr;
 btDefaultMotionState* boxMotion = nullptr;
 btRigidBody* boxBody = nullptr;
 
-Level level1= nullptr;
+Level* level1 = nullptr;
 
 
 
@@ -74,7 +73,7 @@ void InitPhysics() {
 
 Init_Elems();
 
-level1 = new Level(&dynamicsWorld);
+level1 = new Level(dynamicsWorld);
 
 
 }
@@ -83,6 +82,7 @@ level1 = new Level(&dynamicsWorld);
 void UpdatePhysics(float deltaTime) {
     if (dynamicsWorld) {
         dynamicsWorld->stepSimulation(deltaTime);
+        level1->Update(deltaTime);
     }
 }
 
@@ -168,6 +168,7 @@ void testRayCast(Vector3 from, Vector3 to)
 
     // PersonA->Update(deltaTime);
     // PersonA->Render();
+    level1->Render();
 
 
 
