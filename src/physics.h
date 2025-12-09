@@ -35,17 +35,8 @@ void render(float deltaTime);
 void testRayCast(Vector3 from, Vector3 to);
 void DrawRayLine(Vector3 from, Vector3 to, Color color = RED);
 // Player position tracking
-float getPlayerX();
-float getPlayerY();
-float getPlayerZ();
-void setPlayerX(float X);
-void setPlayerY(float Y);
-void setPlayerZ(float Z);
 
-// Player position variables
-extern float playerX;
-extern float playerY;
-extern float playerZ;
+
 
 
 
