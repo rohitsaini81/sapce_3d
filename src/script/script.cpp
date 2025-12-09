@@ -13,6 +13,7 @@ extern "C" {
 #include "physics.h"
 #include "../3dObjects/objects.h"
 #include "../ETC/global_var.h"
+#include "related/file.h"
 
 float health=0.1f;
 
@@ -176,10 +177,16 @@ int lua_CREATE_ELEM(lua_State* L) {
     Model* mmodel = nullptr;
     if(strlen(mpath)>4){
         std::cout << mpath<<std::endl;
-        mmodel = new Model(LoadModel(mpath));
+
+
+        std::string path = getExecutableDir();
+
+    //--->
+    std::string assetsDir = pathJoin(getExecutableDir(), mpath);
+    mmodel = new Model(LoadModel(assetsDir.c_str()));
     }
 
-std::cout<<mpath;
+std::cout<<mpath<<std::endl;
 
     // Map string to ElementType enum
     if (strcmp(typeStr, "BOX") == 0) {

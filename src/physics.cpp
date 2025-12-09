@@ -100,6 +100,8 @@ void CleanupPhysics() {
     delete boxShape;
     delete boxMotion;
     delete boxBody;
+
+    delete level1;
 }
 
 

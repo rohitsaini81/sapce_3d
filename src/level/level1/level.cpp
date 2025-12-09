@@ -2,7 +2,7 @@
 #include <cmath>
 #include <cstring>
 #include <stdexcept>
-
+// #include <iostream>
 
 Level::Level(btDiscreteDynamicsWorld* world)
     : dynamicsWorld(world)
@@ -33,6 +33,7 @@ void Level::Update(float dt)
 
 void Level::Render()
 {
+    // std::cout<<"rendering"<<std::endl;
     for (auto &o : objects) {
         if (!o.modelLoaded) continue;
 

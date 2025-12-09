@@ -17,8 +17,8 @@ void Controller::update(float dt)
 
 void Controller::render() const
 {
-    std::cout << "Player Position: "
-              << "(" << playerX << ", " 
-              << playerY << ", " 
-              << playerZ << ")\n";
+    // std::cout << "Player Position: "
+    //           << "(" << playerX << ", " 
+    //           << playerY << ", " 
+    //           << playerZ << ")\n";
 }

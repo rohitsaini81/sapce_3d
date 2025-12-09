@@ -2,6 +2,8 @@
 #include "elements.h"
 #include "iostream"
 #include "cstring"
+
+
 Elements::Elements(ElementType type, btDiscreteDynamicsWorld* dynamicsWorld, Model* Umodel) {
     std::cout << "---------------------------------------\n";
     object_name = "testing 1";
