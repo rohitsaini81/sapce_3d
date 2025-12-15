@@ -13,7 +13,14 @@ Player::Player(btDiscreteDynamicsWorld* world, const std::string& modelPath, con
     CreatePhysicsBody(startPos);
 
     std::cout << "Player constructed!" << std::endl;
+
+    animCount = 0;
+    ModelAnimation* anims = LoadModelAnimations(modelPath.c_str(), &animCount);
+    float animFrameCounter = 0.0f;
+
+
 }
+
 
 Player::~Player()
 {
@@ -132,6 +139,12 @@ void Player::Render()
     position.y -= modelHeight * 0.5f;
 
     DrawModel(model, position, 1.0f, WHITE);
+
+        if (animCount > 0) {
+             animFrameCounter += 1.0f;
+             if (animFrameCounter >= anims[0].frameCount) animFrameCounter = 0;
+             UpdateModelAnimation(model, anims[0], (int)animFrameCounter);
+         }
 }
 
 

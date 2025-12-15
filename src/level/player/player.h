@@ -17,6 +17,12 @@ public:
     Vector3 GetPosition() const;
     btRigidBody* GetBody() const { return body; }
 
+    int animCount;
+    ModelAnimation* anims;
+    float animFrameCounter;
+
+
+
 private:
     void CreatePhysicsBody(const Vector3& startPos);
     void SyncRotation();
