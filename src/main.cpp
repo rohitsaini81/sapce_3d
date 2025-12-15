@@ -45,6 +45,7 @@ extern "C" {
 namespace fs = std::filesystem;
 int main() {
     // Initialization
+    SetExitKey(-1); // useless
     SetConfigFlags(FLAG_MSAA_4X_HINT); // Enable Multi Sampling Anti Aliasing 4x (if available)
     InitWindow(1080, 700, "Rick and Morty Baby");
     SetTargetFPS(60);
@@ -152,11 +153,12 @@ int screen_number=0;
 
 
 
-
+bool userWantsToClose = false;
 
  // GAME LOOP HERE
+ //
 
-    while (!WindowShouldClose()) {
+    while (!userWantsToClose) {
         time_t currentModified = getFileLastModifiedTime(scriptPath);
         if (currentModified != lastModified) {
             lastModified = currentModified;
@@ -173,15 +175,20 @@ int screen_number=0;
 
         float delta = GetFrameTime();
 
-        
-
-
 
 
 // UPDATE HERE
 control->update(delta);
         // menu screen
         if(screen_number==0){
+
+if(WindowShouldClose()){
+userWantsToClose=true;
+}
+
+
+
+
             menu.Update();
         video->Update();   // decode next frame
         int choice = menu.GetSelected();
@@ -209,6 +216,9 @@ control->update(delta);
         // }
 
 
+        if(IsKeyPressed(KEY_ESCAPE)){
+            screen_number=0;
+        }
 
         if(IsKeyPressed(KEY_P)){
             cameraDistance++;
@@ -224,7 +234,7 @@ control->update(delta);
 
         }
 
-    
+
 
 
 
@@ -266,9 +276,9 @@ control->render();
             video->Render(0, 0);
             menu.Render();
         }
-        
-        
-        
+
+
+
         if(screen_number==1){
             BeginMode3D(camera);
         DrawPlane(Vector3Zero(), (Vector2){10.0, 10.0}, WHITE);
